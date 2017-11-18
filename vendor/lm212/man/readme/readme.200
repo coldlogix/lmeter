@@ -1,0 +1,12 @@
+
+        Here is the LM 2.00 program with the same functions as the previous
+NewLM, but with better directory structure and make files. 
+
+        GCC support included!
+
+        You can test the program using two examples in TEST directory,
+examples of *.DFL files for HYPRES technology are there also. 
+
+        Please, wait for the next versions.
+
+        Paul Bunyk.

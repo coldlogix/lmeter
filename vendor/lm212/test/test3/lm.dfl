@@ -1,0 +1,65 @@
+#****************************************************************
+#***********	HYPRESS layerset definition	*****************
+#****************************************************************
+#		created 01-27-1992 by P.Bunyk & S.Polonsky
+#			             Gridsize adjusted for Cadence
+#                       21-04-1995 - new M1 bias (P.B.)
+#			18-05-1995 - M1 bias adjusted (P.B.) 
+#				     (Cadence takes care of another 0.5 um)
+
+
+# CAD layers definition: number and names
+nlayers		11
+laynames	term m0  i0  m1  i1a  r2  i1b  m2  i2  m3  r3
+
+# Encoding from CAD layers to physical films and their parameters
+#		    M0   I0   M1B  IT  M1C IX1  R2   IX2 M2   I2  M3   R3
+nfilms		12
+filmtype        N   S    I    S    I   I    I    I   I   S    I   S     I
+filmpar	 	0 .100 .15 .086 .003 .05   .1   .12 .1  .085 .5  .085   1.27
+filmmask	0   0    0    0    3   3   -8    0   0   0    0   0     0
+filmshift       0   0.25 0   -0.05 0   0    0    0   0   0.25 0   0.375 0
+#filmshift      0   0    0    0    0   0    0    0   0   0    0   0     0
+
+layconf[term]	1   1    1    0    0   0    0    0   1   0    1   0    0
+layconf[m0]	0   1    0    0    0   0    0    0   0   0    0   0    0
+layconf[i0]	0   0    1    0    0   0    0    0   0   0    0   0    0
+layconf[m1]	0   0    0    1    0   0    0    0   0   0    0   0    0
+layconf[i1a]	0   0    0    0    1   1    0    0   0   0    0   0    0
+layconf[r2]	0   0    0    0    0   0    1    1   0   0    0   0    0
+layconf[i1b]	0   0    0    0    0   0    0    0   1   0    0   0    0
+layconf[m2]	0   0    0    0    0   0    0    0   0   1    0   0    0
+layconf[i2]	0   0    0    0    0   0    0    0   0   0    1   0    0
+layconf[m3]	0   0    0    0    0   0    0    0   0   0    0   1    0
+layconf[r3]	0   0    0    0    0   0    0    0   0   0    0   0    1
+
+#	Note: 	IX2 exists everywhere but inside I1B boxes.
+#		IX1 exists inside R2 boxes OR there,where IX2 exists.
+#	filmmask>0 - film = film[filmmask] AND mask
+#       filmmask<0 - film = film[-filmmask] OR mask
+
+#	"default" terminal configuration:
+deftermup	m2
+deftermdown	m1
+
+#	kmax	   - max rang of grid decimation
+#	kmin	   - not used but please define it
+#	currunit   - as in old LMeter
+#	unitsize   - um/CAD unit
+#	gridsize   - CAD units/finite element
+#	bulklambda - subtracted from edge boundaries  
+
+gridsize	0.5
+kmax		4
+kmin		1
+currunit	0.125
+unitsize	1.0
+bulklambda	0.085
+
+#	Coeff3D0 seems to be equal to Pi
+Coeff3D0	3.14
+Coeff3D1	1.45
+Coeff3D2	1.1
+
+
+

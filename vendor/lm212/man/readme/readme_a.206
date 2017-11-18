@@ -1,0 +1,21 @@
+L-Meter 2.06 patch a
+
+NEW FEATURES
+
+	Boundary inductances and technology cut-offs are added not only to
+the MSL boundary over the groundplane, but also to the groundplane over the 
+MSL. 
+
+	See 'test/upgnd' for an example. Currents in two MSL would be the
+same, if M1 and M2 have the same cut-off (it is necessary to modify
+'hypres.dfl' to test this case).
+
+TO BE DONE:
+
+	Boundary coefficients have to be recalculated using Chang's
+program.
+
+	This feature was not tested with more complex examples.  
+
+
+

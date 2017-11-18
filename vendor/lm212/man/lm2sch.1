@@ -1,0 +1,63 @@
+.\" -*- nroff -*-
+.TH LM2SCH 1 "November 03 1998"
+.SH NAME
+lm2sch \- a program to map current matrix produced by 
+.IR lmeter (1)
+on schematic netlist.
+.SH SYNOPSIS
+.B lm2sch
+[
+.B \-n 
+.I netlist
+]
+[
+.B \-t 
+.I terminal names
+]
+[
+.B \-c 
+.I LMeter output
+]
+[
+.B \-o
+.I output file
+]
+[
+.B \-h
+]
+.br		
+.SH DESCRIPTION
+.I lm2sch
+estimates all inductances and mutual inductances in given schematic
+netlist to achieve the best match with the current matrix produced by 
+.IR lmeter (1)
+
+.SH OPTIONS
+.TP
+.B \-h
+print short help message.
+.TP
+.BI "\-n\ " "netlist.spi"
+filename of a SPICE netlist to read, defaults to 
+.I netlist.spi
+.TP
+.BI "\-t\ " "term.name"
+file with terminal names, defaults to 
+.I term.name
+.TP
+.BI "\-c\ " "lmeter.out"
+file with 
+.BR lmeter (1)
+results, defaults to 
+.I lmeter.out
+.TP
+.BI "\-o\ " "lm2sch.out"
+output file to write name/value pairs for all inductances, defaults to 
+.I lm2sch.out
+.SH BUGS
+Please let me know if there are any!
+.SH SEE ALSO
+.IR lmeter (1)
+.SH AUTHOR
+Paul Bunyk
+

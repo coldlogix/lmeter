@@ -1,0 +1,15 @@
+set	dxcname=upgnd.dxc
+set	topname=del_me.top
+set	swapdir=
+set	gridsize=2.5
+set	kmax=3
+
+rem	here terminals are described
+rem	ntrm=<nmb. of terminals>
+rem	ttype=<ntrm times Isource Short or None (used only first letter)>
+rem	tup,tdown=<ntrm times name of up/down eld. (must be metall) >
+
+set	ntrm=4
+set	ttype=		I   S   I   S 
+set	tup=		M2  M2  M2  M2 
+set	tdown=		M1  M1  M1  M1

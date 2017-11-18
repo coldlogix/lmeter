@@ -1,0 +1,30 @@
+# $Id: lm2sch.c,v 1.3 1998/10/30 16:47:29 paul Exp paul $
+# ReadSpiceNetlist: unknown element 'RJ2' ignored
+# ReadSpiceNetlist: unknown element 'RJ3' ignored
+# ReadSpiceNetlist: unknown element 'RJ6' ignored
+# CheckNetlist: Node 15 of degree 0 removed
+# lm2sch: Elements: 34, Nodes: 22, Terms: 13, Inds: 20, Mutuals: 1
+# CalculateCurrents: Iterations: 3
+# Accuracy: 0.000560
+# dE: 0.026612
+KX                0.086
+L11               0.046
+L22               0.082
+LJ2               0.049
+LJ1               0.037
+LJ3               0.059
+LJ6               0.045
+L10               0.570
+L25               0.149
+L12               0.307
+L9                0.248
+L17               0.819
+L4                1.511
+L2                0.746
+L3                0.754
+L1                0.550
+L5                0.781
+L6                0.532
+L7                0.889
+L8                0.657
+L26               1.593

@@ -1,0 +1,46 @@
+#
+# Makefile for the LMeter
+#
+
+CC=d:\ndp\cc
+MAKE=nmake
+
+#       Add -DOLDLM3 to get .dat files for the old solver.
+#       Add -DNOINDCORR to suppress boundary inductance correction.
+#       Add -DNDEBUG when completely tested ...
+
+CFLAGS = -O -n2 -n3 -I../csspdms  -ansi -Id:\ndp\ansi -D__NDPC__
+
+.c.obj:
+	$(CC) $(CFLAGS) -c $<
+
+OBJS1=	ael_gm.obj    cross_gm.obj  elds_lm.obj   input_lm.obj  main_lm.obj  show_gm.obj 
+OBJS2=	ael_lm.obj    dots_lm.obj   eqs_lm.obj    lays_gm.obj   outlm_gm.obj  solve.obj  
+OBJS3=	avltree.obj   dump_gm.obj   lmeter.obj    pat_lm.obj    tree_lm.obj            
+OBJS4=	edget_gm.obj  inpfiles.obj  main_gm.obj   rcnf_lm.obj
+
+all: lmeter.exp  
+
+lmeter.exp: $(OBJS1) $(OBJS2) $(OBJS3) $(OBJS4) csspdms.lib
+	$(CC) $(CFLAGS) -o lmeter.exp *.obj csspdms.lib -lm
+	
+csspdms.lib: 
+	cd ..\csspdms
+	$(MAKE) -f makefile.ndp csspdms.lib
+	copy csspdms.lib ..\lmeter
+	cd ..\lmeter
+
+clean:
+	del *.s 
+	del *.obj 
+	del *.lib 
+	del lmeter.exp
+	del *.map
+	del *.bak
+	del *.lnk
+	cd ..\csspdms
+	$(MAKE) -f makefile.ndp clean
+	cd ..\lmeter
+
+install: lmeter.exp
+	copy lmeter.exp ..\..\bin

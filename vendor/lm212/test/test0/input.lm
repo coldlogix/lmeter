@@ -1,0 +1,7 @@
+currunit        0.38
+psprint yes
+# gridsize 300
+nterm    4
+termtype S S I I
+termup   M1 M2 M1 M2
+termdown M0 M0 M0 M0

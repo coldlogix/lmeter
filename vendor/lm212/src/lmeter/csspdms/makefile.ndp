@@ -1,0 +1,28 @@
+#
+# Makefile for the csspdms.a library
+#
+
+CC=d:\ndp\cc
+AR=d:\ndp\tools\386lib
+
+CFLAGS = -O -n2 -n3 -ansi -Id:\ndp\ansi -D__NDPC__
+
+.c.obj:
+	$(CC) $(CFLAGS) -c $<
+
+OBJS1=	directso.obj  iterativ.obj  numbfact.obj  spmatrix.obj  symbfact.obj	
+OBJS2=	factoriz.obj  lowlevel.obj  permute.obj   spvector.obj
+	
+all: csspdms.lib
+
+csspdms.lib: $(OBJS1) $(OBJS2)
+	$(AR) csspdms.lib -REPLACE $(OBJS1)
+	$(AR) csspdms.lib -REPLACE $(OBJS2)
+	
+clean:
+	del *.s
+	del *.obj
+	del *.lib
+	del *.bak
+	del *.lnk
+

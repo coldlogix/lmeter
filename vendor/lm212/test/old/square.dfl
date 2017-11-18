@@ -1,0 +1,16 @@
+set	dxcname=square.dxc
+set	topname=square.top
+set	swapdir=.\
+set	gridsize=5
+set	unitsize=0.1
+set	kmax=0
+
+rem	here terminals are described
+rem	ntrm=<nmb. of terminals>
+rem	ttype=<ntrm times Isource Short or None (used only first letter)>
+rem	tup,tdown=<ntrm times name of up/down eld. (must be metall) >
+
+set	ntrm=2
+set	ttype=		I  S   
+set	tup=		M1 M1  
+set	tdown=		M0 M0

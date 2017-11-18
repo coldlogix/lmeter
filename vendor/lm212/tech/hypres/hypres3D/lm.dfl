@@ -1,0 +1,26 @@
+rem	****************************************************************
+rem	***********	HYPRESS layerset definition	****************
+rem	****************************************************************
+
+REM		     M0   I0   M1B  IT  M1C IX1  R2   IX2 M2   I2  M3   R3
+rem	shift=   0   0.25 0   0.0    0   0    0    0   0  0.25 0  0.375 0
+set	shift=   0   0    0   0.0    0   0    0    0   0  0    0  0     0
+
+set 	gridsize=25
+set	kmax=0
+set	kmin=0
+set	currunit=0.125
+set	unitsize=0.01
+
+rem	Coeff3D0 seems to be equal to Pi,
+rem	Coeff3D1 seems to be equal to u0/0.80,
+rem	Coeff3D2 seems to be equal to u0/1.5.
+
+#set	Coeff3D0=3.14159
+#set	Coeff3D1=1.587
+#set	Coeff3D2=0.833
+
+set	Coeff3D0=0
+set	Coeff3D1=1.05
+set	Coeff3D2=0
+

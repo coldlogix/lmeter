@@ -1,0 +1,15 @@
+
+        L-Meter 2.02
+
+     	NEW FEATURES:
+
+	You can use negative coordinates in your layout !!!
+
+        BUGS FIXED:
+
+        LM doesn't apply now strupr() to filenames and dirnames (like test.dxc 
+in "DXCNAME = test.dxc"), but it still applies it to left-hand side of those 
+assignments (for example to "DXCNAME" ) and to right-hand side of the 
+assignments with non-filename values (for example, "TDOWN = grd GRD"). 
+In other words, you can use both cases in LM's input exept when specifying 
+filename or dirname in case-sensitive system like UNIX.

@@ -1,0 +1,76 @@
+
+Hello!
+
+This is a cleaned-up distribution of LMeter. I would appreciate
+*all* your comments and suggestions.
+
+To compile LMeter: 
+
+o Keep in mind that the major part of this program was written in
+Borland C environment (The coolest software I'd seen before I got
+djgpp and later Linux ";-) ) and it passed through a number of
+revisions so never be surprised to find some strange #ifdef's and do
+not pay too much attention to them.
+
+o LMeter is written entirely in C (no C++/no FORTRAN ";^) ). It was
+compiled successfully using gcc (all versions I know about), or cc's
+from Irix 5.* and HP-UX 9.0*. I do not expect that you'll run into any
+compiler-dependent problems if you use any ANSI-C compiler.
+
+o You can do 
+	make clean; make all; make install 
+to compile lmeter, lm2sch and cif2dxc, binaries are installed in ./bin
+
+o If you want to tweak lmeter parameters cd src/lmeter
+
+o Do *not* start from editing 'sysdpnd.h' --- most likely you will not
+have to edit it at all... ";^)
+
+o Edit 'makefile' --- compiler flags and a couple of defines. Do *not*
+define NDEBUG --- the performance overhead of all internal checks is
+not so large and they are usefull sometimes. 
+
+o 'make' --- everything should be compiled smoothly. 
+
+o 'cd test' and try to calculate an inductance of a sample
+configuration:	
+	lmeter input.lm < test90.dxc
+Directory 'old' contains some (more interesting) examples but
+configuration files for them are in an obsolete format. You may want to
+convert them to the new format.
+
+o Now pass through 'nroff(1)' all three available manual pages, 
+cd tech and start creating technology description files for your
+technology. The most tricky part will be to estimate boundary
+inductance values, any good ideas how to formalize this process are
+appreciated.
+
+o When you will be ready to calculate inductances of large and complex
+structures, you will want to tune solver's parameters to make it as
+effecient as possible. First, check data types in 'csspdms/csspdms.h'
+--- if your computer is small enought and you are not going to deal
+with >64K equations try to use 2-byte integers for XEQType and
+XNZType; you may also try to use 'float' instead of 'double' for
+FloatType, but I'm not sure about the results. The used algorithm is
+the conjugated gradients method applied after equation reordering and
+incomplete factorization. Play with parameters in 'sspdms/css_par.h'
+(you will definitely want to change LNNZMEM --- an estimation of your
+coputer's RAM that may be used to store factorized matrix; you
+definitely would not like this matrix to be swapped out) and with the
+Thrs table in 'solve.c', which specifies (for different number of
+equations) how small the matrix element should be to be conbsidered as
+small enough to be thrown away during incomple factorisation (*please*
+let me know if you will find a good combination of these numbers, I
+never had enough time to play with them).
+
+Good luck!
+
+Paul
+
+
+
+
+
+
+
+

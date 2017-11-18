@@ -1,0 +1,114 @@
+From brock@hypres.hypres.com  Thu Oct 28 10:46:53 1999
+Status: RO
+X-VM-v5-Data: ([nil nil nil nil nil nil nil nil nil]
+	["3418" "Thursday" "28" "October" "1999" "10:46:42" "-0400" "Darren K. Brock" "brock@hypres.com" nil "88" "Flattened Spice Netlist" "^From:" nil nil "10" nil nil nil nil nil]
+	nil)
+Return-Path: <brock@hypres.hypres.com>
+Received: from hypres.hypres.com (IDENT:root@hypres.hypres.com [206.233.212.2])
+	by pbunyk.physics.sunysb.edu (8.9.3/8.9.3) with ESMTP id KAA07247
+	for <paul@pbunyk.physics.sunysb.edu>; Thu, 28 Oct 1999 10:46:51 -0400
+Received: from hypres.hypres.com (brock@localhost [127.0.0.1])
+	by hypres.hypres.com (8.8.7/8.8.7) with ESMTP id KAA20702;
+	Thu, 28 Oct 1999 10:46:42 -0400
+Message-Id: <199910281446.KAA20702@hypres.hypres.com>
+X-Mailer: exmh version 2.0.2
+In-Reply-To: Your message of "Mon, 25 Oct 1999 18:02:00 EDT."
+             <14356.54104.607289.670766@pbunyk.physics.sunysb.edu> 
+Mime-Version: 1.0
+Content-Type: multipart/mixed ;
+	boundary="==_Exmh_-9206474880"
+From: "Darren K. Brock" <brock@hypres.com>
+To: Paul Bunyk <paul@pbunyk.physics.sunysb.edu>
+Cc: brock@hypres.com
+Subject: Flattened Spice Netlist
+Date: Thu, 28 Oct 1999 10:46:42 -0400
+
+This is a multipart MIME message.
+
+--==_Exmh_-9206474880
+Content-Type: text/plain; charset=us-ascii
+
+Paul, 
+
+I've been thinking some more about flattening the SPICE netlists. Attached are 
+2 new netlists - one with sub-circuits and one flattened by hand. The 
+algorithm is straitforward to go between the two. I've only used RSJ cells as 
+subcircuits, so the back-annotation issue should not cause a problem.
+
+Here's how it works....
+
+A line like 
+
+	X0 11 13 ak_luk1jj06
+
+flattens to become 
+
+	B0 11 13 100 jjluk1 area=2.04
+	RS0 11 13 2.36o
+
+by matching 'ak_luk1jj06' with the block 
+
+	.subckt ak_luk1jj06 2 1 
+	B0 2 1 3 jjluk1 area=2.04
+	R0 2 1 2.36o
+	.ends ak_luk1jj06
+
+Here the third node on each junction (the phase node in Xic) is just the 
+device number + 100, i.e. X2 9 0 => B2 9 0 102
+
+Do you see any problems with this approach?
+
+Thanks...
+DKB
+-- 
+Darren K. Brock, Ph.D. <brock@hypres.com>
+Manager of Advanced Development 
+HYPRES, 175 Clearbrook Rd., Elmsford, NY 10523 
+914.592.1190 x7810 (voice) & 914.347.2239 (fax)
+
+
+--==_Exmh_-9206474880
+Content-Type: text/plain ; name="db_luk1tff01.cir.flat"; charset=us-ascii
+Content-Description: db_luk1tff01.cir.flat
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="db_luk1tff01.cir.flat"
+
+KiBHZW5lcmF0ZWQgYnkgWGljIGZyb20gZmlsZSBkYl9sdWsxdGZmMDEgKEZMQVRURU5FRCBC
+WSBIQU5EKQoudHJhbiAxcHMgMTAwMHBzCkkwIDAgOApJMSAwIDkKSTIgMCAxCkwwIDEwIDIg
+NC4yNnBICkwxIDkgMTQgNS4ycEgKTDIgMiA5IDQuNjhwSApMMyAxIDAgNC4wcEgKTDQgNCA2
+IDEuOTVwSApMNSA2IDggMC41MnBICkw2IDggMyAxLjA0cEgKTFAwIDUgMTAgMC41NXBICkxQ
+MSA3IDExIDIuOTlwSApMUDIgMiAxMSAwLjY4cEgKTFAzIDEyIDAgMC4wNXBICkxQNCAxMyAw
+IDAuMTBwSApQMCA0IDAKUjAgMTQgMTUgMW8KUjEgMTQgMCAyLjM2bwpWMCAwIDE1CkIwIDEx
+IDEzIDEwMCBqamx1azEgYXJlYT0yLjA0ClJTMCAxMSAxMyAyLjM2bwpCMSA5IDAgMTAxIGpq
+bHVrMSBhcmVhPTIuMDQKUlMxIDkgMCAxLjk1bwpCMiAxMCAxMiAxMDIgampsdWsxIGFyZWE9
+MS4zMQpSUzIgMTAgMTIgMy42N28KQjMgMyA3IDEwMyBqamx1azEgYXJlYT0xLjAKUlMzIDMg
+NyAxLjMxbwpCNCA2IDAgMTA0IGpqbHVrMSBhcmVhPTIuMQpSUzQgNiAwIDIuNjlvCkI1IDMg
+NSAxMDUgampsdWsxIGFyZWE9Mi40NgpSUzUgMyA1IDEuNzlvCg==
+
+--==_Exmh_-9206474880
+Content-Type: text/plain ; name="db_luk1tff01.cir"; charset=us-ascii
+Content-Description: db_luk1tff01.cir
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="db_luk1tff01.cir"
+
+KiBHZW5lcmF0ZWQgYnkgWGljIGZyb20gZmlsZSBkYl9sdWsxdGZmMDEKLnRyYW4gMXBzIDEw
+MDBwcwpJMCAwIDgKSTEgMCA5CkkyIDAgMQpMMCAxMCAyIDQuMjZwSApMMSA5IDE0IDUuMnBI
+CkwyIDIgOSA0LjY4cEgKTDMgMSAwIDQuMHBICkw0IDQgNiAxLjk1cEgKTDUgNiA4IDAuNTJw
+SApMNiA4IDMgMS4wNHBICkxQMCA1IDEwIDAuNTVwSApMUDEgNyAxMSAyLjk5cEgKTFAyIDIg
+MTEgMC42OHBICkxQMyAxMiAwIDAuMDVwSApMUDQgMTMgMCAwLjEwcEgKUDAgNCAwClIwIDE0
+IDE1IDFvClIxIDE0IDAgMi4zNm8KVjAgMCAxNQpYMCAxMSAxMyBha19sdWsxamowNgpYMSA5
+IDAgYWtfbHVrMWpqMDYKWDIgMTAgMTIgYWtfbHVrMWpqMDIKWDMgMyA3IGFrX2x1azFqajAw
+Clg0IDYgMCBha19sdWsxamowOQpYNSAzIDUgYWtfbHVrMWpqMDgKLnN1YmNrdCBha19sdWsx
+amowNiAyIDEKQjAgMiAxIDMgampsdWsxIGFyZWE9Mi4wNApSMCAyIDEgMi4zNm8KLmVuZHMg
+YWtfbHVrMWpqMDYKLnN1YmNrdCBha19sdWsxamowOCAyIDEKQjAgMiAxIDMgampsdWsxIGFy
+ZWE9Mi40NgpSMCAyIDEgMS45NW8KLmVuZHMgYWtfbHVrMWpqMDgKLnN1YmNrdCBha19sdWsx
+amowOSAyIDEKQjAgMiAxIDMgampsdWsxIGFyZWE9Mi42OQpSMCAyIDEgMS43OW8KLmVuZHMg
+YWtfbHVrMWpqMDkKLnN1YmNrdCBha19sdWsxamowMCAyIDEKQjAgMiAxIDMgampsdWsxIGFy
+ZWE9MS4wClIwIDIgMSA0LjhvCi5lbmRzIGFrX2x1azFqajAwCi5zdWJja3QgYWtfbHVrMWpq
+MDIgMiAxCkIwIDIgMSAzIGpqbHVrMSBhcmVhPTEuMzEKUjAgMiAxIDMuNjdvCi5lbmRzIGFr
+X2x1azFqajAyCg==
+
+--==_Exmh_-9206474880--
+
+
+

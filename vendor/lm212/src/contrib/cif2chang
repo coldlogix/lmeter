@@ -1,0 +1,63 @@
+#!/usr/bin/awk -f
+#
+#	The simplest CIF file reader. 
+#	
+
+BEGIN	{
+        #	Layer name to Chang's electrode No. encoding;
+        tabfile= ENVIRON["LM"] "/tech/" ENVIRON["LM_TECH"] "/lay2chang.tab";
+	while ((getline < tabfile) > 0)
+        {	lay2nmb[$1]=$2;
+	}
+        #	Current electrode --- now undefined
+        nmb = 999;
+        #	Some parameters
+        lambda = 0.085;	# micrometers
+        R = 1;	
+        CIFunit = 100; 	# Units per micrometer
+        xgrid = 0.1;	# approx. cell size in micrometers
+	ygrid = 0.1;
+        #	Start Chang's file
+	print	"1";	
+}
+END	{
+        # 	Finish Chang's file
+	print	"-1/";	
+}	
+
+#
+# All operators must start at new line
+# 
+
+# Layer operator
+/^[ \t]*L/	{
+        gsub(";","",$2);
+	nmb = lay2nmb[$2];
+} 
+
+# Box operator:	B Length Width CenterX CenterY
+/^[ \t]*B/	{
+        len     = $2 / CIFunit;
+        width   = $3 / CIFunit;
+        centerX = $4 / CIFunit;
+        centerY = $5 / CIFunit;
+
+#       printf "# %f %f %f %f \n", len, width, centerX, centerY;
+	
+	nx = len/xgrid;
+	ny = width/ygrid;
+ 	if	(nx<4)	nx=4;
+ 	if	(ny<4)	ny=4;
+        # Add one more box to Chang's file, format:
+        # nmb x1 x2 y1 y2 lambda Nx Ny Rx Ry
+	printf "%4d %6.3f %6.3f %6.3f %6.3f %6.3f %4d %4d %6.3f %6.3f \n",
+	nmb,
+	centerX - len/2, centerX + len/2,
+	centerY - width/2,  centerY + width/2,
+	lambda,
+	nx,ny,
+	R,R;
+} 
+
+
+

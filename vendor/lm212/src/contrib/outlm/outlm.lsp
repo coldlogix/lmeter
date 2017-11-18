@@ -1,0 +1,88 @@
+;
+;	Procedure OUTLM to write *.DXC files for L-Meter.
+;			
+;				Created	04/21/93 by Paul Bunyk
+;
+(load	"LIB.LSP")
+(setq   *workers*	nil)	;	List of installed entity supports.
+(load	"_insert_.lsp")
+(load	"_pline_.lsp")
+(setq	snap	2.5)
+
+(defun  C:OUTLM    (/ ename fname currfn promptstr namelist)
+	(setq	currfn	(strcat (getvar "DWGNAME")  ".DXC") )
+	(setq	promptstr	(strcat	"Output file name <" currfn "> ? "))
+	(if	(equal	(setq	fname 	(getstring promptstr)) "")
+		(setq fname currfn)
+	)
+	(setq	f	(open	fname "w"))
+	(write-line "$ENTITIES" f)
+	;	Global Stacks to store ename & GTM when entering INSERT
+	(setq   NameStack       nil)
+	(setq   GTMStack        nil)
+	;	Global Transformation Matrix is changed while entering INSERT
+	;	Initialize GTM with I.
+	(setq   GTM     (list	'(1 0 0)
+				'(0 1 0)
+				'(0 0 1)
+			)
+	)
+	;	Get list of objects to convert.
+	(setq	namelist	(ss2list	(ssget)))
+	(while	namelist
+		(setq	ename	(car	namelist))
+		(setq   ent	(entget	ename))
+		(setq   worker  (assoc  (GetA ENTTYPE   ent)    *workers*))
+		(if     worker  
+			(apply  (cdr   worker) (list    ent))
+			(NoWorker	ent)
+		)
+		(setq	namelist	(cdr namelist))
+	)
+	(write-line "$EOF" f)
+	(close f)
+)
+;	Give warning for non-supported entity
+(defun	NoWorker	(ent)
+	(princ  "I don't have subroutine to handle ")
+	(princ  (GetA ENTTYPE   ent))
+	(princ  " at ")
+	(princ  (GetA POINT_1   ent))
+	(terpri)
+)
+;	Write list of points as one "polyline" (in L-Meter terms) 
+;	with current Lay & Param. This function applyes the GTM to the points.
+(defun  Output  (pntlist / pnt1 pnt2 x y xt yt wt)
+	(write-line	(strcat	"$POLYLINE\n" Lay "\n\t" (itoa (fix Param))) f)
+	(setq	i	0)
+	(setq	pnt2	nil	pnt1	nil)
+	;	(princ	pntlist)	(terpri)
+	(repeat	(length	pntlist)
+		(setq	pnt	(nth	i	pntlist))
+		(setq	i	(1+	i))
+		(setq	x	(car	pnt))
+		(setq	y	(cadr	pnt))
+		(setq	xt	(+	(* x	(car(car	GTM)))
+					(* y	(car(cadr 	GTM)))
+						(car(caddr	GTM))
+				)
+		)
+		(setq	yt	(+	(* x	(cadr(car	GTM)))
+					(* y	(cadr(cadr 	GTM)))
+						(cadr(caddr	GTM))
+				)
+		)
+		(setq	wt	(+	(* x	(caddr(car	GTM)))
+					(* y	(caddr(cadr 	GTM)))
+						(caddr(caddr	GTM))
+				)
+		)
+		(setq	xt	(ToSnap	(/ xt wt)))
+		(setq	yt	(ToSnap	(/ yt wt)))
+		(write-line	(strcat "\t" (rtos xt) "\t" (rtos yt)) f)
+		;	Draw line - for debugging
+		(setq	pnt1	pnt2)
+		(setq	pnt2	(list	xt	yt))
+		(if	(and	pnt1	pnt2)	(grdraw	pnt1	pnt2	255 1))
+	)
+)

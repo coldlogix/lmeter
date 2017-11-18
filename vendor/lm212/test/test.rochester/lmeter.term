@@ -1,0 +1,4 @@
+nterm 14
+termtype S S S S S S S I I I I I I I 
+termup m1 m1 m2 m2 m1 m2 m1 m1 m1 m2 m2 m1 m2 m1 
+termdown m0 m0 m0 m0 m0 m0 m0 m0 m0 m0 m0 m0 m0 m0 

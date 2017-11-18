@@ -1,0 +1,5 @@
+psprint yes
+nterm 2
+termtype I I 
+termup wira wira 
+termdown gnde gnde

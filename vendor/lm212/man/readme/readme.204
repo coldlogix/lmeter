@@ -1,0 +1,24 @@
+
+        L-Meter 2.04
+
+     	NEW FEATURES:
+
+        New OUTLM with support of INSERT, MINSERT, PLINE (with & w/out
+width). 
+
+        In 'lm.dfl' the real parameter of SC layer is modified: instead of
+(d+lambda1+lambda2) (d+lambda1*Coth[b1/lambda1]+lambda2*Coth[b2/lambda2])
+is used.
+
+	The resulting current matrix is saved in 'curs.txt' file.
+
+	Variable initial Threshold.
+
+	Iterative solver guarantees 4 significant digits of the final 
+result (i.e. current matrix) after decimal point.
+ 
+	Some bugs were fixed (special thanks to P.Shevchenko).
+
+        COMING SOON:
+
+        Built-in fringing - factors are still waiting ...

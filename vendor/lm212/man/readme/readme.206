@@ -1,0 +1,57 @@
+L-Meter 2.06
+
+NEW FEATURES
+
+        Boundary inductances (and technology cut-off) are
+added: now you can specify the three values of reciprocal
+boundary inductances for microstrip line over the hole in
+the groundplane, over the groundplane and between two
+groundplanes. Note, that there is no correction for MSL's
+inductance __under__ the groundplane. You also can specify
+the changes in geometry sizes while fabrication (less then
+half of grid size, otherwise you'll get warning and those
+shifts would be truncated). See 'hypres.dfl' and 'CSE.dfl'
+for comments and suggested values of those coeffitients,
+but you should make your own set of tests to get those
+values. In 'hypres.dfl' those values were calculated using
+simple estimations, and in 'CSE.dfl' they were calculated
+using Chang's program for several particular geometries in
+this technology. The same work for Hypres technology must
+be done later.
+
+        The directory structure is changed. Sources of some
+utilities are added to the src directory, including
+'dxcview' - simple BGI utility to view DXC files, 'cif2dxc'
+- a CIF to DXC converter and S. Polonsky's 'lm2cir'.
+
+        The NDP compiler is supported (again!), makefile
+for UNIX with GCC is also included. To build LMeter itself,
+enter src/lmeter and run "make -f makefile.ndp". See
+makefiles for additional targets. Please note, that (since
+NDP compiler doesn't support -M option to build the
+dependencies) when changing one of headers you have to
+erase .obj files manually to rebuild them - sorry for
+unconvenience. Sure, UNIX makefile works well. Utilities
+are built separately.
+
+        OUTLM program now supports block structure and wide
+plines in ACAD designs, you can also specify (in
+_skip_.lsp) the list of block names to exclude from
+extraction (JJs & non-inductive M0 holes).  Lisp files are
+stored in src/outlm, you have to put them in ACAD directory
+and (load "outlm").
+
+        You can specify the name of LM defaults file
+(lm.dfl in previous versions) in environment variable
+LM_DEFAULTS, for example: 
+	set LM_DEFAULTS=/usr/lmeter/tech/CSE.dfl 
+to work with the technology described in this file. If this
+variable is not assigned, LMeter reads './lm.dfl'.
+
+KNOWN BUGS:
+
+        Don't try to specify the terminals that cross metal
+layers - sometimes it works, but in general case it
+doesn't. 
+
+

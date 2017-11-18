@@ -1,0 +1,6 @@
+# Worst currents accuracy: 0.000553 in experiment with terminal "J1"
+# Worst dE: 0.000212448 in experiment with terminal "I1"
+# name            layout schem  diff  
+L0                0.424  0.424 +0.000
+L1                0.797  0.797 +0.000
+L2                0.796  0.796 -0.000

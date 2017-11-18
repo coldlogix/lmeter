@@ -1,0 +1,48 @@
+
+        L-Meter 2.03
+
+	This is preliminary (alfa) version. 
+
+     	NEW FEATURES:
+
+        Built-in solver included ! When compiled __without__ OLDLM3
+defined, the result of LM's work is not huge data files for LM3 solver,
+but the current matrix itself. You can use it as input to LM2CIR program
+(by S.Polonsky) to extract an equivalent circuit.
+
+        The current matrix is returned to stdout (while all the mess to
+stderr) as number of triplets: <IOUT ITEA CURRENT> where IOUT - No. of 
+terminal-source, ITEA - No. of active (not dummy) terminal, CURRENT -
+current through the terminal ITEA when phi across IOUT is equal to 1.
+
+        Those IOUT & ITEA are equal to terminal's ELEV values in ACAD.
+Please note that this is NOT equivalent to the old CURS.TXT file format -
+they are equivalent only if all terminals are defined as current sources.
+
+        Probably you'll want to customise some parameters of the solver.
+All solver's stuff (including header with the parameters) is stored at
+SRC/CSSPDMS subdirectory (for C Sparse Simmetric Positive-Definite Matrix
+Solver). 
+
+        Surely, with OLDLM3 defined you'll get the same LMeter as before
+(with some bugs fixed).
+
+        KNOWN BUGS:
+
+        Version of NDP C compiler I have doesn't support compilation of
+dir/file.c, I used dir\file.c instead, but this interfered with '\' escape
+sequences in __FILE__ macro.
+
+        With NDP C I failed to separate stdout & stderr (probably, the 
+problem is with my NDP C installation).
+
+        Subdirectory support in .MAK files is too rude. If somebody knows how 
+to do it better - please let me know.
+
+        COMING SOON:
+
+        Built-in fringing - factors.
+
+        New outlm.lsp to support blocks, "wide" objects, etc.
+
+        

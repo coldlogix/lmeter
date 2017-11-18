@@ -1,0 +1,317 @@
+.\" -*- nroff -*-
+.TH lmeter 5 "1995 May 19"
+.SH NAME
+lmeter \- 
+.BR lmeter (1) 
+configuration file format and configuration parameters
+.SH SYNOPSIS
+see 
+.BR lmeter (1)
+.SH DESCRIPTION
+All 
+.BR lmeter (1) 
+configuration parameters are supplied either in a command line or from
+a file in the
+.BR lmeter (5) 
+format (preferred). This document describes this format and all valid
+configuration options (useful for command line usage too).
+.SH FILE FORMAT
+File is considered to be a sequence of 
+.IR lines . 
+Each line is either a comment line (if it starts from the
+number sign '#' as the first character in the line) or a command line.
+Command line consists of a parameter name (the first 
+word separated by a sequence of blanks or tab characters),
+and the parameter value (the rest of the line). 
+.LP
+While each parameter can occur several times in a set of
+configuration files that 
+.BR lmeter (1) 
+reads, only the 
+.I first 
+encountered definition is used. This provides the
+opportunity to tune some parameters for a particular run by supplying
+them in a file that 
+.BR lmeter (1) 
+reads 
+.I before 
+the standard configuration files with technology description.
+.LP
+While the parameter names are case-insensitive, it is strongly
+encouraged to be consistent in uppercase usage.
+.SH INDIVIDUAL PARAMETERS DESCRIPTION
+What follows is the individual parameter description. Please see the
+supplied sample configuration files for usage examples.
+.LP 
+.BF Note:
+The following convention was assumed: when we speak about
+.IR layers , 
+we refer to a CAD system layers, to which geometrical
+objects in layout design tool are assigned; while the term
+.I film 
+is reserved to refer to the films of either superconductor or
+insulator that are deposited (and etched) on a chip and have a
+particular thicknesses and a particular order. There is usually no
+one-to-one correspondence between layers and films.
+.SH INPUT FILE. UNITS AND SCALING
+.TP
+.\" dxcname
+\fB dxcname
+- input DXC (see 
+.BR dxc (5))
+file name. If this parameter is specified, input geometry is
+supplied in this file, otherwise the standard input is used.
+.TP
+.\" gridsize	50
+\fB gridsize \fI float
+- the smallest finite element size, in CAD units (units that are used
+in 
+.BR dxc (5)
+file). \fI E.g., \fR if design is supplied with 1 CAD unit equal to
+0.01 um (as in CIF) and user wants the smallest finite element to have
+0.5 um size, then gridsize is equal to 0.5/0.01=50 CAD units.
+.TP
+.\" unitsize	0.01
+\fB unitsize \fI float
+- one CAD unit in microns. For our example it would be equal to
+0.01.
+.TP
+.\" currunit	0.125
+\fB currunit \fI float 
+- current unit in mA. The calculated terminal
+currents for unit phase drop will be expressed in these usits and the
+corresponding net inductances \fI in PSCAn units \fR will be equal to
+one over these currents. If you want to get inductances in pH you
+should make this current unit equal to 0.329 mA (this value gives
+PSCAn unit of inductance Le=F0/(2*Pi*Ie) equal to 1 pH) As a special
+case this current unit may be set to 0 to calculate
+.I resistance
+of a complex configuration in resistive layer. Additional information
+is available upon request.
+.TP
+.\" kmax		4
+\fB kmax \fI int 
+- maximal order of grid decimation. The
+.I largest 
+finite element may have size equal to 
+.I 2^kmax * gridsize \fR .
+.TP
+.\" kmin		1
+\fB kmax \fI int 
+- really not used now (but you'd better specify it to be equal to 1, 
+please).
+.TP
+.\" exist45
+\fB exist45 
+- if this parameter is specified, \fI gridsize \fR is
+additionaly divided by 2. It is necessary in that (rare) case when
+gridsize is equal to one CAD snap unit and design contains 45 degree
+lines. Then their intersection points may fall on the two times
+smaller snap and \fI gridsize \fR should be decreased. Usually it is
+not necessary.
+.SH TECHNOLOGY DESCRIPTION. LAYERS AND FILMS 
+.TP
+\fB nlayers \fI int
+- the total number of layers including the \fI TERM \fR layer.
+.\" nlayers		11
+.TP 
+\fB laynames \fI name,...
+- all layer names that appear on the layout.
+.\" laynames	TERM M0  I0  M1  I1A  R2  I1B  M2  I2  M3  R3
+.TP 
+.\" laycolors	15   6   7   1   4    2   16   3   5   8   16   
+\fB laycolors \fI int,...
+- if 
+.BR lmeter (1)
+is compiled with debugging PostScript printout support this parameter
+specifies the colors in which different layers are drawn. See
+.I show_ps.c 
+for a number-to-color correspondence. 
+.TP
+.\" psprint
+\fB psprint
+- if 
+.BR lmeter (1)
+is compiled with debugging PostScript printout support and this
+parameter is specified, that printout is really produced.
+.TP
+.\" nfilms		12
+\fB nfilms \fI int 
+- number of physical films. The following
+parameters have \fI nfilms+1 \fR items after the keyword. These
+correspond to all films (from bottom to top) plus one additional dummy
+film in the leftmost (zero) position (do not ask me why did I need it,
+but think a bit about C vs. Fortran numbering scheme and recall that
+the first version of this progream was written in Fortran ;-) ).
+.TP
+.\" filmtype        N   S    I    S    I   I    I   I    I   S    I   S    I
+\fB filmtype \fI (N|I|S),...
+- film type, either None (used for dummy films, notably the first
+one), Insulator or Superconductor.
+.TP 
+.\" filmpar	 	0 .100 .15 .086 .003 .05   .1   .12 .1  .085 .5  .085 1.27
+\fB filmtype \fI float,...
+- one parameter per film, either thickness for insulator films or
+London penetration depth (actually multiplied by these 
+.IR cth s)
+for superconductors.
+.TP
+.\" filmshift       0  0.25  0   0.0   0   0    0    0   0  0.25 0  0.375 0
+\fB filmshift \fI float,...
+- shift (in um) of superconductor film boundaries due to
+overetching. Each boundary is shifted towards center by this value, 
+.IR e.g. , 
+shift 0.25 um means that a microstrip line on chip is 
+0.5 um narrower than designed. It is impossible (due to arising
+numerical instabilities) to specify 
+.I filmshift
+larger then half the 
+.I gridsize * unitsize
+value. Larger shifts may be taken into account by preprocessing with
+some mask manipulation program.
+.TP
+.\" layconf[TERM]	1   1    1    0    0   0    0    0   1   0    1   0    0
+\fB layconf[\fIlayername\fB] \fI (1|0)|(+|-),...  
+- several lines of this form provide information about layer to film
+correspondence. For each layer 
+.I one 
+(or 
+.I plus 
+) in some
+position means this layer has the corresponding bit set in its 
+.I configuration vector \fR.
+This configuration vector is used in the following procedure:
+first, a vector of existing films is initialised by the configuration
+vector of the 
+.I TERM
+layer, then the whole geometry is sweeped
+from left to right and when during this sweep a line in some layer is
+encountered the vector of existing films is 
+.IR xor 'ed
+with the configuration vector of this layer. Consequently, 
+.I one 
+in the configuration vector for the 
+.I TERM 
+layer marks a 
+.I negative 
+film (
+.I i.e., 
+film for which user draw 
+.I holes
+) and it should have 
+.I one 
+in its leftmost position). This
+also means that two overlapping geometries in the same layer will
+produce a 
+.I hole 
+in the corresponding film where they are
+overlapping. Usually it is not a desired effect, and such geometries
+should be eliminated during preprocessing.
+.TP
+.\" filmmask	0   0    0    0    3   3   -8    0   0   0    0   0
+\fB filmmask \fI int,...
+- this parameter is used to erase or add films at some point if some
+other film exists (or not exists) at this point. If some film has a
+positive number N in the corresponding position, then this film is 
+deleted from everywhere where film number N does not exist, and if
+this number is negative, then this film is created in the places where
+film number N exists. Dummy first film has number 0 and it is assumed
+to exist everywhere.
+.SH TERMINALS
+Terminals are the geometrical objects (drawn in the 
+.I TERM 
+layer) that are connected to a pair of films between which phase
+drops may be specified and currents through terminals are calculated by
+.BR lmeter (1).
+Each 
+.I I-source 
+terminal is assigned a unit phase drop (between
+its upper and lover films) in turn and currents through all other
+.I active 
+terminals (both sources and shorts) are calculated.
+.TP
+.\" termtype
+\fB termtype \fI (N|I|S),...
+- terminal type, either Null, I-source or Short. Null
+terminals are considered inactive in the current run.   
+.TP
+.\" termup
+\fB termup \fI (layername|*),...
+.TP
+\fB termdown \fI (layername|*),...  - these parameters specify upper
+and lower films that are connected by each terminal. For convenience a
+layer names are used instead of film numbers, but these layers should
+have one and only one film in their config vectors (and it should be
+superconductive). Star is substituted by the
+.I default 
+layer name. 
+.\" deftermup	M2
+.\" deftermdown	M1
+.TP
+\fB deftermup \fI layername
+.TP
+\fB deftermdown \fI layername
+- the majority of terminals in real circuits connect upper and lower
+films of Josephson trilayer, and the layer names that correspond to
+these films may be specified as \fI defaults. \fR
+.SH BOUNDARY INDUCTANCES
+.BR lmeter (1) 
+takes into account 3D effects in magnetic field distribution using the
+notation of a 
+.I boundary inductances
+-- the imaginary inductances connected in parallel with a
+microstrip line do describe inductance decrease due to 3D
+effects. They may be viewed as a set of adjustment coefficients that
+allows one to fit
+.BR lmeter (1)'s
+results for long microstrip lines to the results given by other
+programs (
+.IR e.g. , 
+Chang's program). 
+.\" bulklambda	0.085
+.TP
+\fB bulklambda \fI float
+- we have found that the best results in this approximation may be
+achieved if the microstrip line width is decreased by the value of
+London's penetration depth from both sides. This is the value to use
+as the penetration depth.  
+.TP
+\fB Coeff3D0 \fI float
+.TP
+\fB Coeff3D1 \fI float
+.TP
+\fB Coeff3D2 \fI float
+- values of the boundary 
+.I admittances 
+for a microstrip line segment with no ``groundplane'' at all, with one
+``groundplane'' (open upper or lower semispace) or two
+``groundplanes'' (both under and over the microstip line). The role of
+``groundplane'' is played by any superconductive layer other than the
+one of the microstrip line. These admittances are calculated in the
+following way:
+.br
+.in +0.5i
+.I Y=1/2*(mu0/L3D - mu0/L2D)
+.br
+.in -0.5i
+where L3D is an inductance of a microstrip line per micron calculated
+by the other program, and L2D is a usual 2D value: 
+.br
+.in +0.5i
+.I L2D=mu0*dmag/(w-2*bulklambda)
+.br
+.in -0.5i
+Width (and layer) for microstrip line are choosed to be the most
+common used in the particular technology, or, preferably, several
+configurations may be considered and the coefficient values are
+choosen to minimize the relative error in
+.BR lmeter (1) 
+calculation in comparison with the other program.
+.SH BUGS
+MSDOS line endings in this file may cause problems in UN*X
+environment.
+.SH SEE ALSO
+.IR lmeter (1),
+.IR dxc (5).
+.SH AUTHOR
+Paul Bunyk

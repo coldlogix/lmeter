@@ -1,0 +1,95 @@
+.\" -*- nroff -*-
+.TH dxc 5 "1995 May 19"
+.SH NAME
+dxc \- 
+.BR lmeter (1) 
+input geometry file format
+.SH SYNOPSIS
+see 
+.BR lmeter (1)
+.SH DESCRIPTION
+This is a simple flat geometry description format to specify a set 
+of lines and polylines attached to different layers.
+.SH FILE FORMAT
+$ENTITIES
+.br
+.in +0.5i
+$POLYLINE
+.br
+.I layerName
+.br
+.I termNumber
+.br
+.in +0.5i
+.I x0 y0
+.br
+.I x1 y1
+.br
+.I ...
+.br
+.I xn yn
+.in -0.5i
+$POLYLINE
+.br
+.I ...
+.br
+.in -0.5i
+$EOF
+.br
+.SH NOTES
+\(bu
+As many spaces/tabs/newlines may be used as necessary.
+.LP
+\(bu
+Layer names should be declared in technology description file (see 
+.BR lmeter (5)). 
+They may not start from the dollar sign (it marks
+keywords).
+.LP
+\(bu
+While each polyline is assigned an integer number, this number has
+meaning only for terminals (that are drawn using layer
+.IR TERM ).
+If several polylines in layer 
+.I TERM
+share the same number they are considered to be different parts of one
+terminal. 
+.LP
+\(bu
+The majority of polylines in designs are 
+.I closed
+and they should have the last point
+.I xn yx 
+the same as the first one. Terminals are built from open polylines
+sometimes (usually when a terminal is just a straight line on the end
+of a microstrip line), in this case they should not have the first
+point repeated at the end.
+.LP
+\(bu
+While coordinates may be floating point numbers, they should be
+integer multiples of the declared 
+.I gridsize
+(see
+.BR lmeter (5)).
+.LP
+.SH BUGS
+This format looks ugly in general... ;-) 
+.SH SEE ALSO
+.IR lmeter (1),
+.IR lmeter (5).
+.SH AUTHOR
+Paul Bunyk
+
+
+
+
+
+
+
+
+
+
+
+
+
+

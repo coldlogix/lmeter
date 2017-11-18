@@ -1,0 +1,219 @@
+(***********************************************************************
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used on any computer system with Mathematica 3.0,
+MathReader 3.0, or any compatible application. The data for the notebook 
+starts with the line of stars above.
+
+To get the notebook into a Mathematica-compatible application, do one of 
+the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing the 
+word CacheID, otherwise Mathematica-compatible applications may try to 
+use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+***********************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[      5624,        167]*)
+(*NotebookOutlinePosition[      6542,        198]*)
+(*  CellTagsIndexPosition[      6498,        194]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+Cell[BoxData[
+    \(\(0\ \[CircleDot]\ \((a_)\)\  := \ 0; \ 
+    \((a_)\)\ \[CircleDot]\ 0\  := \ 0; \n1\ \[CircleDot]\ \((a_)\)\  := \ a; 
+    \ \((a_)\)\ \[CircleDot]\ 1\  := \ a; \n
+    \((a_)\)\ \[CircleTimes]\ \((b_)\)\  := \ 
+      Inner[CircleDot, \ a, \ b, \ Plus]; \n\)\)], "Input"],
+
+Cell[BoxData[{
+    \(\ \ \ \ \ \ \ \ \ 
+    A\  := \ {{GL, 0, 0, IL[1]}, \n
+        \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {GT, 0, 0, 0}, \n
+        \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {0, GL, 0, \ IL[2]}, \n
+        \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {0, GT, 0, 0}, \n
+        \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {0, 0, GL, IL[3]}, \n
+        \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {0, 0, \ GT, 0}}; \n\ \ \ \n
+    \ \ \ \ \ \ \ \ \ X\  := \ {XP1, XP2, XP3, XL}\), 
+    \(\ \ \ \ \ \ \ \ \ B\  := \ {0, PT[1], 0, PT[2], 0, PT[3]}\n\)}], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(MatrixForm[A].MatrixForm[X] == MatrixForm[B]\), 
+    \(MatrixForm[
+      TA = Transpose[A]\  /. \ {GL -> TGL, \ GT -> TGT, \ IL[a_] -> TIL[a]}]
+      \), 
+    \(MatrixForm[\((TA\[CircleTimes]A)\)\ ].MatrixForm[X]\  == \ 
+      MatrixForm[TA\[CircleTimes]B]\)}], "Input"],
+
+Cell[BoxData[
+    RowBox[{
+      RowBox[{
+        TagBox[
+          RowBox[{"(", GridBox[{
+                {"GL", "0", "0", \(IL[1]\)},
+                {"GT", "0", "0", "0"},
+                {"0", "GL", "0", \(IL[2]\)},
+                {"0", "GT", "0", "0"},
+                {"0", "0", "GL", \(IL[3]\)},
+                {"0", "0", "GT", "0"}
+                }], ")"}],
+          (MatrixForm[ #]&)], ".", 
+        InterpretationBox[
+          RowBox[{"(", GridBox[{
+                {"XP1"},
+                {"XP2"},
+                {"XP3"},
+                {"XL"}
+                }], ")"}],
+          MatrixForm[ {XP1, XP2, XP3, XL}]]}], "==", 
+      InterpretationBox[
+        RowBox[{"(", GridBox[{
+              {"0"},
+              {\(PT[1]\)},
+              {"0"},
+              {\(PT[2]\)},
+              {"0"},
+              {\(PT[3]\)}
+              }], ")"}],
+        MatrixForm[ {0, 
+          PT[ 1], 0, 
+          PT[ 2], 0, 
+          PT[ 3]}]]}]], "Output"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", GridBox[{
+            {"TGL", "TGT", "0", "0", "0", "0"},
+            {"0", "0", "TGL", "TGT", "0", "0"},
+            {"0", "0", "0", "0", "TGL", "TGT"},
+            {\(TIL[1]\), "0", \(TIL[2]\), "0", \(TIL[3]\), "0"}
+            }], ")"}],
+      (MatrixForm[ #]&)]], "Output"],
+
+Cell[BoxData[
+    RowBox[{
+      RowBox[{
+        TagBox[
+          RowBox[{"(", GridBox[{
+               
+                 {\(TGL\[CircleDot]GL + TGT\[CircleDot]GT\), "0", "0", 
+                  \(TGL\[CircleDot]IL[1]\)},
+               
+                 {"0", \(TGL\[CircleDot]GL + TGT\[CircleDot]GT\), "0", 
+                  \(TGL\[CircleDot]IL[2]\)},
+               
+                 {"0", "0", \(TGL\[CircleDot]GL + TGT\[CircleDot]GT\), 
+                  \(TGL\[CircleDot]IL[3]\)},
+               
+                 {\(TIL[1]\[CircleDot]GL\), \(TIL[2]\[CircleDot]GL\), 
+                  \(TIL[3]\[CircleDot]GL\), 
+                  \(TIL[1]\[CircleDot]IL[1] + TIL[2]\[CircleDot]IL[2] + 
+                    TIL[3]\[CircleDot]IL[3]\)}
+                }], ")"}],
+          (MatrixForm[ #]&)], ".", 
+        InterpretationBox[
+          RowBox[{"(", GridBox[{
+                {"XP1"},
+                {"XP2"},
+                {"XP3"},
+                {"XL"}
+                }], ")"}],
+          MatrixForm[ {XP1, XP2, XP3, XL}]]}], "==", 
+      InterpretationBox[
+        RowBox[{"(", GridBox[{
+              {\(TGT\[CircleDot]PT[1]\)},
+              {\(TGT\[CircleDot]PT[2]\)},
+              {\(TGT\[CircleDot]PT[3]\)},
+              {"0"}
+              }], ")"}],
+        MatrixForm[ {
+          CircleDot[ TGT, 
+            PT[ 1]], 
+          CircleDot[ TGT, 
+            PT[ 2]], 
+          CircleDot[ TGT, 
+            PT[ 3]], 0}]]}]], "Output"]
+}, Open  ]]
+},
+FrontEndVersion->"X 3.0",
+ScreenRectangle->{{0, 1280}, {0, 1024}},
+WindowSize->{980, 763},
+WindowMargins->{{112, Automatic}, {Automatic, 60}},
+PrintingPageRange->{Automatic, Automatic},
+PrintingOptions->{"PrintingMargins"->{{18, 18}, {36, 36}},
+"PaperSize"->{612, 792},
+"PaperOrientation"->"Landscape",
+"PrintCellBrackets"->False,
+"PrintRegistrationMarks"->False,
+"PrintMultipleHorizontalPages"->False,
+"Magnification"->1}
+]
+
+
+(***********************************************************************
+Cached data follows.  If you edit this Notebook file directly, not using
+Mathematica, you must remove the line containing CacheID at the top of 
+the file.  The cache data will then be recreated when you save this file 
+from within Mathematica.
+***********************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+Cell[1709, 49, 291, 5, 75, "Input"],
+Cell[2003, 56, 531, 9, 171, "Input"],
+
+Cell[CellGroupData[{
+Cell[2559, 69, 291, 6, 59, "Input"],
+Cell[2853, 77, 970, 33, 116, "Output"],
+Cell[3826, 112, 322, 8, 93, "Output"],
+Cell[4151, 122, 1457, 42, 80, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+
+
+
+(***********************************************************************
+End of Mathematica Notebook file.
+***********************************************************************)
+

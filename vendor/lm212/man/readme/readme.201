@@ -1,0 +1,19 @@
+
+        L-Meter 2.01 
+
+        NEW FEATURES:
+
+        Subboundary points are decimated now. (Run BC's graphical version to
+watch the new grids!).
+
+        User MUST NOT draw TERM 0 line now, but the variable LINECNF[TERM] (in
+file LM.DFL) must be defined with 1s in the positions of "negative" layers as
+before. 
+
+	Better MAKE files.
+
+        RESTRICTIONS:
+
+        Negative coordinates are not supported yet (will be fixed soon).
+
+        

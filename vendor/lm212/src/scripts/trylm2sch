@@ -1,0 +1,142 @@
+#!/usr/bin/perl
+#
+# File:         trylm2sch
+# Description:  Run lm2sch trying to find necessary mutual inductances 
+# Author:       Paul Bunyk
+# Created:      Tue Nov  29 1998
+# Language:     perl
+# Package:      LMeter
+# Status:       Experimental
+#
+# (C) Copyright 1998, Paul Bunyk, all rights reserved.
+#
+
+$netlistin = "netlist.spi";
+$tmpnetlist = "tmp.netlist.spi";
+$netlistout = "new.netlist.spi";
+$threshold = 0.0; #inductances for which mutuals make sense
+$numbest = 5; # how many mutuals to report
+$finaldE = 0.0005; # on which dE value to stop
+$finalKval = 0.01; # on which maximal K to stop
+$maxIter = 8; # how many iterations to perform
+
+$lm2sch = "lm2sch";
+
+@inds = ();
+@elts = ();
+@Ks = ();
+
+# make list of all inductances
+open(netlist, "<$netlistin") || die("trylm2sch: Can not open \"$netlistin\"");;
+while(<netlist>) 
+  {
+    last if (/\.END/);
+    push(@elts, $_);
+    ($element, $node1, $node2, $value) = split;
+    push(@inds, "$value $element") 
+      if ($element=~/^[Ll]/ && $value > $threshold);
+  }
+close(netlist);
+$numinds = @inds;
+# print "$numinds inductances found\n";
+
+# sort inductances by (expected) value
+@inds = sort {$b <=> $a} @inds; #interpret strings as numbers, by $value
+# and keep only names
+foreach $i (0..@inds-1)
+  {
+    ($value, $name) = split("[ \t\n]+",$inds[$i]);
+    $inds[$i] = $name; 
+  }
+
+# find best mutual and use it
+
+$continue = 1;
+$iter = 0;
+
+while ($continue)
+{
+  print "\ntrylm2sch: new iteration $iter\n";
+  $dEmin = 1000;
+  $maxVal = 0.0;
+  @results = ();
+  foreach $i1 (0..$numinds-1)
+    {
+      $l1 = $inds[$i1];
+      foreach $i2 ($i1+1..$numinds-1)
+	{
+	  $l2 = $inds[$i2];
+	  
+	  # write new netlist (with an extra mutual)
+	  open(netlist, ">$tmpnetlist") 
+	    || die("trylm2sch: Can not open \"$tmpnetlist\"");
+	  print netlist "KX $l1 $l2 0.0\n";
+	  print netlist @Ks;
+	  print netlist @elts;
+	  print netlist ".END\n";
+	  close(netlist);
+	  
+	  # run lm2sch with this new netlist
+	  open(lm2sch, "$lm2sch -n $tmpnetlist|") 
+	    || die("trylm2sch: Can not run \"$lm2sch\"");
+	  
+	  $dE = 1000;		# in the case something goes wrong with lm2sch
+	  while (<lm2sch>)
+	    {
+	      $dE = $1 if (/dE: ([.eE0-9]+)/);
+	      ($name,$val, $old) = split if (/^KX/);
+	    }
+	  close(lm2sch);
+	  # print "$?";
+	  if ($dE < 1000)
+	    {
+	      $val = -$val if($val < 0.0);
+	      # you can swap $val and $dE to change sorting order
+	      push(@results,"$val $l1 $l2 $dE");
+	      if ($val >= $maxVal)
+		{
+		  $maxVal = $val;
+		  $Kline = sprintf("%-10s %-5s %-5s %6.4f","K$l1$l2", 
+				   $l1, $l2, $val);
+		  printf ("trylm2sch: big mutual: %30s dE=%7.5f\n", $Kline, $dE)
+		    if ($val > $finalKval); 
+		}
+	      
+	    }
+	}
+    }
+  
+  #sort @results by the first value 
+  @results = sort {$b <=> $a} @results; 
+  
+  $numbest = @results if ($numbest > @results);
+  
+  print "trylm2sch: biggest mutuals:\n";
+  foreach $i (0..$numbest-1)
+    {
+      ($val, $l1, $l2, $dE) = split("[ \t\n]+",$results[$i]);
+      $Kline = sprintf("%-10s %-5s %-5s %6.4f","K$l1$l2", $l1, $l2, $val);
+      printf "%30s dE=%7.5f\n", $Kline, $dE;      
+    }
+  
+  $iter++;
+  # insert THE best K into Ks for next iteration
+  ($val, $l1, $l2, $dE) = split("[ \t\n]+",$results[0]);
+  $Kline = sprintf("%s %s %s %6.4f","K$iter", $l1, $l2, $val);
+  push(@Ks, "$Kline\n");
+  print("trylm2sch: added $Kline\n");		    
+  # save new netlist (with the best Ks)
+  open(netlist, ">$netlistout") 
+    || die("trylm2sch: Can not open \"$netlistout\"");
+  print netlist @Ks;
+  print netlist @elts;
+  print netlist ".END\n";
+  close(netlist);
+  
+  $continue = 0 if ($dE < $finaldE 
+		    || $val < $finalKval
+		    || $iter > $maxIter); # reached it!
+}
+
+print "trylm2sch: exiting after $iter iterations, final dE=$dE\n";
+

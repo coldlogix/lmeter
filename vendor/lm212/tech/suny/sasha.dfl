@@ -1,0 +1,45 @@
+# SUNY submicron technology
+
+# CAD layers definition: number and names
+nlayers		5
+laynames	term  M2  I2  R1 M4  
+
+# Encoding from CAD layers to physical films and their parameters
+#		term     M2       I2      R1      M4  
+nfilms		4
+filmtype        N        S        I       I       S
+filmpar	 	0        0.09     0.135   0.08    0.086 
+filmmask	0        0        0       0       0
+filmshift       0        0        0       0       0
+
+layconf[term]	1        0        1       0       0 
+layconf[M2]	0        1        0       0       0
+layconf[I2]	0        0        1       0       0
+layconf[R1]	0        0        0       1       0
+layconf[M4]	0        0        0       0       1
+
+#	"default" terminal configuration:
+deftermup	M4
+deftermdown	M2
+
+#	kmax	   - max rang of grid decimation
+#	kmin	   - not used but please define it
+#	currunit   - as in old LMeter
+#	unitsize   - um/CAD unit
+#	gridsize   - CAD units/finite element
+#	bulklambda - subtracted from edge boundaries  
+
+gridsize	0.5
+kmax		5
+kmin		1
+currunit	0.125
+unitsize	1.0
+bulklambda	0.085
+
+#	Coeff3D0 seems to be equal to Pi
+Coeff3D0	3.14
+Coeff3D1	1.25
+Coeff3D2	0.8
+
+
+

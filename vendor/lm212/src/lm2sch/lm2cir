@@ -1,0 +1,4 @@
+#!/bin/csh
+time ~cad/pscan/bin/HPPA/lm2cira netlist.spi lmeter.out report term.name
+time ~cad/pscan/bin/HPPA/lm2cirb
+

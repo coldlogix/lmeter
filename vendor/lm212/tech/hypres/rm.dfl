@@ -1,0 +1,53 @@
+#	****************************************************************
+#	***********	HYPRES layerset definition	****************
+#	***********	for resistance calculation	****************
+#	****************************************************************
+
+#			created 04-16-1992 by P.Bunyk
+#				18-05-1995 Modified for Cadence (P.B.) 
+nlayers 11
+laynames     TERM M0  I0  M1  I1A  R2  I1B  M2  I2  M3  R3
+laycolors    15   14  5   4   3    2   7    1   13  11  10
+
+#	       TERM M0  IR2  R2   IR3 R3
+nfilms  5
+filmtype     	N   S    I    S    I   S
+filmpar      	0   0    0.8  0   -.76 0
+filmmask     	0   0    0    0    0   0  
+filmshift    	0   0    0    0    0   0
+
+# for res. calc.  thicknesses of dummy IR2,IR3 to Rsq,4/5*Ohm/um^2
+
+layconf[term]   1   1    1    0    1   0    
+layconf[m0]  	0   1    0    0    0   0
+layconf[i0]  	0   0    0    0    0   0    
+layconf[m1]  	0   0    0    0    0   0    
+layconf[i1a]    0   0    0    0    0   0    
+layconf[r2]  	0   0    0    1    0   0
+layconf[i1b]	0   0    0    0    0   0    
+layconf[m2]  	0   0    0    0    0   0    
+layconf[i2]  	0   0    0    0    0   0
+layconf[m3]  	0   0    0    0    0   0
+layconf[r3]  	0   0    0    0    0   1
+
+deftermup       r2
+deftermdown     m0
+
+# Tell LMeter that we want to calculate a resistor: currunit=0
+currunit        0.0
+gridsize        0.25
+kmax            0
+kmin            0
+unitsize        1.0
+bulklambda      0.0
+
+# Of course, no 3D adjustments
+Coeff3D0 0.0
+Coeff3D1 0.0
+Coeff3D2 0.0
+
+
+
+
+
+

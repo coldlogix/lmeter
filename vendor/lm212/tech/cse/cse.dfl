@@ -1,0 +1,75 @@
+rem	****************************************************************
+rem	***********	CSE layerset definition		****************
+rem	****************************************************************
+
+rem			created 09-11-93 by Paul Bunyk
+
+rem	All logical layer names with leading number of them
+set	laynames=9 TERM M2 M3 R1 I2 M4 I3 M5 M6
+set	laycolors= 0
+
+rem	Parameters of physical films:
+rem	nlay=<nmb. of physical films, excluding TERM>
+rem	ltype=<nlay+1 times None,Superconductor or Isolator>
+rem	repar=<----//---- Isolator thickness or SC lambda>
+rem	mask>0 - layer &= mask
+rem     mask<0 - layer |= mask
+
+rem		 TERM M6  M5    I3   M4    R1   I2   M3    M2                                         
+set	nlay=8
+set	ltype=   N    I   S     I    S     I    I    I     S                                         
+set	lrpar= 	 0    0   0.085 0.25 0.086 0.05 0.15 0.001 0.090                                        
+set	lmask= 	 0    0   0     0    0     0    0    0     0
+
+rem	Table to encode logical layers to physical films:
+set laycnf[TERM]=1    0   1     1    0     0    1    0     0                                             
+set laycnf[M2]=  0    0   0     0    0     0    0    0     1                                             
+set laycnf[M3]=  0    0   0     0    0     0    0    1     0                                             
+set laycnf[R1]=  0    0   0     0    0     1    0    0     0                                             
+set laycnf[I2]=  0    0   0     0    0     0    1    0     0                                             
+set laycnf[M4]=  0    0   0     0    1     0    0    0     0                                             
+set laycnf[I3]=  0    0   0     1    0     0    0    0     0                                             
+set laycnf[M5]=  0    0   1     0    0     0    0    0     0                                             
+set laycnf[M6]=  0    1   0     0    0     0    0    0     0                                             
+
+rem     One minor (I hope) bug exists in this table - absence
+rem     of the isolator layer that fills holes in M2 (harmless,
+rem     since there is no metal layer under M2.
+rem	Layer sequence is inverse - I hope, no difference, but
+rem	boundary effects are handled better.
+
+rem	Shift is the difference (in um) between the layout size
+rem	of the metal electrodes and the real size. Shift is positive 
+rem	if the real size is smaller than the layout one. This shift
+rem	is subtracted from the both sides. In other words, metal 
+rem	object on chip is 2*shift um narrower.
+rem	Note, that LMeter can't handle shifts larger then 
+rem	'unitsize'*'gridsize'/2 (using of 'octmm' is recommended to 
+rem	shrink the geometry).
+
+set	shift=   0    0    0     0    0      0    0     0    0
+
+rem	gridsize=<CAD units/minimal grid size>
+rem	unitsize=<um/CAD unit>
+rem	kmax=<max rang of sparsing of the grid>
+rem	kmin=<not used yet,but define it, please>
+rem	currunit=<same as in old LM>
+
+set 	gridsize=4
+set	unitsize=0.05
+set	kmax=5
+set	kmin=1
+set	currunit=0.125
+set	topname=/tmp/delete.me
+set	swapdir=/tmp/
+
+rem	Coeff=u0/<Edge Inductance per micron>;
+rem	<Edge Inductance>=2/(1/L3d - 1/L2d) in pHn/um
+rem	They (multiplied by the grid size) are added to the conductivity 
+rem	of the metal sector, if this sector contains a metal boundary. The number
+rem 	of 'grounds' over and under the sector determine which coeffitient 
+rem	is actually used.  
+
+set	Coeff3D0=3.141
+set	Coeff3D1=0.867
+set	Coeff3D2=1.445

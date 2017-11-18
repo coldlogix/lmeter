@@ -1,0 +1,89 @@
+.\" -*- nroff -*-
+.\"	This is my first attempt to use groff to document my program.
+.\"							Paul Bunyk. 
+.TH LMETER 1 "April 12 1994"
+.SH NAME
+lmeter \- program for superconductive inductances calculation
+.SH SYNOPSIS
+.B lmeter -s
+.I var=name
+.I file ... 
+.br		
+.SH DESCRIPTION
+.IR lmeter (1) 
+computes a current flowing through 
+.I terminals
+of a multilayer superconductive integrated circuit in several
+"experiments" when unit 
+Josephson phase difference across one of the terminals \- 
+.I current sources
+and zero phase differencies across other terminals are
+applied. 
+.PP
+Used approach is based on the solution of 2D laplace equation on Josephson
+phase differencies between superconductive layers with coefficients
+adjusted to take into account 3D effects and changes in feature sizes 
+during fabrication.
+.PP
+Input is a layout description in our special 
+.IR dxc (5)
+format (converter from 
+.I CIF
+and exporters from 
+.I AutoCAD
+and
+.I Design Framework II
+are available) together with the problem and technology description files (
+.IR lmeter (5)),
+output is a matrix of 
+.I admittances 
+between terminals. This matrix is written to the standard output stream as
+a set of lines in the form:
+.TP
+.I <first terminal> <second terminal> <current>
+.TP
+where
+.I current
+is the current flowing through the second terminal when the unit phase drop
+on the first one and zero on others are applied
+.SH OPTIONS
+.PP
+.B \-s 
+.I <name> = <value>
+allows user to specify a value of LMeter's internal variable
+via the command line.
+.PP
+Files specified in the command line are readed one by one to assign
+values to LMeter's internal variables. See 
+.IR lmeter (5)
+for a description of this format and all variables.
+Only the 
+.I first 
+encountered assingment to any variable is taken into account.
+.SH ENVIRONMENT
+.PP
+.I ./lm.dfl
+(if exists) is processed after all files in the command line.
+.PP
+.I $LM_DEFAULTS
+is a shell variable to specify a filename to read after 
+.I ./lm.dfl.
+Usually the technology description is given in this file.   
+.SH BUGS
+.PP
+Overlapping geometries in the same layer are XOR'ed, not OR'ed. Use
+some prepocessing program like 
+.I octmm
+to get rid of those.
+.PP
+Only manhattan geometries (and
+.I probably
+geometries with 45 degree elements) may be processed.
+.PP
+Terminal can not pass through a superconductive layer.  
+.SH SEE ALSO
+.IR lmeter (5),
+.IR dxc (5).
+.SH AUTHOR
+Paul Bunyk
+

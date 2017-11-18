@@ -1,0 +1,140 @@
+(***********************************************************************
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used on any computer system with Mathematica 3.0,
+MathReader 3.0, or any compatible application. The data for the notebook 
+starts with the line of stars above.
+
+To get the notebook into a Mathematica-compatible application, do one of 
+the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing the 
+word CacheID, otherwise Mathematica-compatible applications may try to 
+use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+***********************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[      3388,         95]*)
+(*NotebookOutlinePosition[      4025,        118]*)
+(*  CellTagsIndexPosition[      3981,        114]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+    \(CForm[
+      Simplify[\n\t\t\t
+        Solve[\((x - x01)\)\ *\((y00 - y01)\)\  == \ 
+              \((y - y01)\)*\((x00 - x01)\)\  && \n\t\t\t\t\t\t\t\t\ \ 
+            \((x - x11)\)\ *\((y10 - y11)\)\  == \ 
+              \((y - y11)\)*\((x10 - x11)\), {x, y}]]]\)], "Input"],
+
+Cell["\<\
+List(List(Rule(x,(x00*(x11*(-y01 + y10) + x10*(y01 - y11)) + 
+        x01*(x11*(y00 - y10) + x10*(-y00 + y11)))/
+      (x11*(y00 - y01) + x10*(-y00 + y01) + 
+        (x00 - x01)*(y10 - y11))),
+    Rule(y,(x11*(y00 - y01)*y10 + x00*y01*y10 - 
+        x10*y00*y11 - x00*y01*y11 + x10*y01*y11 + 
+        x01*y00*(-y10 + y11))/
+      (x11*(y00 - y01) + x10*(-y00 + y01) + 
+        (x00 - x01)*(y10 - y11)))))\
+\>", "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(lineA\  := \ 
+      \((x - ax0)\)/\((ax1 - ax0)\)\  == \ \((y - ay0)\)/\((ay1 - ay0)\)\), 
+    \(lineB\  := \ 
+      \((x - bx0)\)/\((bx1 - bx0)\)\  == \ \((y - by0)\)/\((by1 - by0)\)\t\n
+    \), 
+    \(Simplify[Solve[lineA\  && \ lineB, {x, y}]]\)}], "Input"],
+
+Cell[BoxData[
+    \({{x \[Rule] 
+          \((ax0\ \((ay1\ \((bx0 - bx1)\) + bx1\ by0 - bx0\ by1)\) + 
+                ax1\ \((ay0\ \((\(-bx0\) + bx1)\) - bx1\ by0 + bx0\ by1)\))\)/
+            \((ay1\ \((bx0 - bx1)\) + ay0\ \((\(-bx0\) + bx1)\) + 
+                \((ax0 - ax1)\)\ \((by0 - by1)\))\), 
+        y \[Rule] 
+          \(ax0\ ay1\ \((by0 - by1)\) + ax1\ ay0\ \((\(-by0\) + by1)\) + 
+              \((ay0 - ay1)\)\ \((bx1\ by0 - bx0\ by1)\)\)\/\(ay1\ \((
+                bx0 - bx1)\) + ay0\ \((\(-bx0\) + bx1)\) + 
+              \((ax0 - ax1)\)\ \((by0 - by1)\)\)}}\)], "Output"]
+}, Open  ]]
+},
+FrontEndVersion->"X 3.0",
+ScreenRectangle->{{0, 1280}, {0, 1024}},
+WindowSize->{824, 600},
+WindowMargins->{{100, Automatic}, {Automatic, 67}}
+]
+
+
+(***********************************************************************
+Cached data follows.  If you edit this Notebook file directly, not using
+Mathematica, you must remove the line containing CacheID at the top of 
+the file.  The cache data will then be recreated when you save this file 
+from within Mathematica.
+***********************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[1731, 51, 296, 6, 87, "Input"],
+Cell[2030, 59, 430, 10, 223, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[2497, 74, 281, 6, 112, "Input"],
+Cell[2781, 82, 591, 10, 167, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+
+
+
+(***********************************************************************
+End of Mathematica Notebook file.
+***********************************************************************)
+

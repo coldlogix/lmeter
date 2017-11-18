@@ -1,0 +1,413 @@
+(***********************************************************************
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used on any computer system with Mathematica 3.0,
+MathReader 3.0, or any compatible application. The data for the notebook 
+starts with the line of stars above.
+
+To get the notebook into a Mathematica-compatible application, do one of 
+the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing the 
+word CacheID, otherwise Mathematica-compatible applications may try to 
+use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+***********************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[     12413,        337]*)
+(*NotebookOutlinePosition[     13211,        365]*)
+(*  CellTagsIndexPosition[     13167,        361]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+Cell[BoxData[
+    \(\(OnTop[a_, b_]\  := \ Flatten[{a, b}, 1]; \n
+    OnLeft[a_, b_]\  := \ 
+      Transpose[Flatten[{Transpose[a], Transpose[b]}, 1]]; \n
+    Get["\<BlockMat.m\>"]\n\)\)], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(<< test/Matrix\), 
+    \(NL\  = \ \(Dimensions[IL]\)[\([1]\)]; \n
+    NT\  = \ \(Dimensions[GT]\)[\([1]\)]; \n
+    NN\  = \ \(Dimensions[GT]\)[\([2]\)]; \n
+    MatrixForm[GLGT\  = \ OnTop[GL, GT]]; \n
+    MatrixForm[G = Transpose[GLGT].GLGT]; \n
+    MatrixForm[Ginv\  = \ Inverse[N[G]]]\), 
+    \(MatrixForm[GL]; \nMatrixForm[GT]; \.18 \.13\nMatrixForm[IL]; \n
+    MatrixForm[PT]; \n
+    ILI[i_]\  := \ DiagonalMatrix[\(Transpose[IL]\)[\([i]\)]]\), 
+    \(PTI[i_]\  := \ \(Transpose[PT]\)[\([i]\)]\), 
+    \(TIL[i_]\  := \ Transpose[ILI[i]]\), 
+    \(TGL\  := \ Transpose[GL]\), 
+    \(TGT := \ Transpose[GT]\), 
+    \(MatrixForm[ILI[1]]; \nMatrixForm[PTI[2]]; \)}], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", GridBox[{
+           
+             {"0.666666666666666785`", "0.333333333333333392`", 
+              "0.166666666666666651`", "0.166666666666666714`", 
+              "0.083333333333333357`", "0.0833333333333333214`", 
+              "0.0833333333333333214`", "0.0833333333333333392`"},
+           
+             {"0.333333333333333392`", "0.666666666666666785`", 
+              "0.333333333333333303`", "0.333333333333333436`", 
+              "0.166666666666666714`", "0.166666666666666651`", 
+              "0.166666666666666625`", "0.166666666666666696`"},
+           
+             {"0.166666666666666651`", "0.333333333333333303`", 
+              "0.666666666666666607`", "0.166666666666666696`", 
+              "0.083333333333333357`", "0.333333333333333259`", 
+              "0.333333333333333214`", "0.0833333333333333214`"},
+           
+             {"0.166666666666666714`", "0.333333333333333436`", 
+              "0.166666666666666714`", "0.666666666666666873`", 
+              "0.333333333333333436`", "0.0833333333333333392`", 
+              "0.0833333333333333392`", "0.333333333333333392`"},
+           
+             {"0.0833333333333333747`", "0.16666666666666674`", 
+              "0.083333333333333357`", "0.333333333333333481`", 
+              "0.666666666666666873`", "0.0416666666666666696`", 
+              "0.0416666666666666696`", "0.166666666666666714`"},
+           
+             {"0.0833333333333333214`", "0.166666666666666651`", 
+              "0.333333333333333303`", "0.0833333333333333392`", 
+              "0.0416666666666666785`", "0.666666666666666607`", 
+              "0.166666666666666607`", "0.0416666666666666607`"},
+           
+             {"0.0833333333333333037`", "0.166666666666666607`", 
+              "0.333333333333333214`", "0.0833333333333333214`", 
+              "0.0416666666666666607`", "0.166666666666666607`", 
+              "0.666666666666666518`", "0.0416666666666666607`"},
+           
+             {"0.0833333333333333392`", "0.166666666666666696`", 
+              "0.0833333333333333214`", "0.333333333333333392`", 
+              "0.166666666666666696`", "0.0416666666666666607`", 
+              "0.0416666666666666607`", "0.666666666666666607`"}
+            }], ")"}],
+      (MatrixForm[ #]&)]], "Output"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(A = 
+      \[Sum]\+\(i = 1\)\%NT\((TIL[i].GL.Ginv.TGL.ILI[i] - TIL[i].ILI[i])\); \n
+    B = \[Sum]\+\(i = 1\)\%NT\((TIL[i].GL.Ginv.TGT.PTI[i])\); \n
+    MatrixForm[A]\), 
+    \(MatrixForm[B]\), 
+    \(MatrixForm[L = Inverse[A].B]\)}], "Input",
+  FontSize->18],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", GridBox[{
+           
+             {\(-20.5791933344626665`\), \(-0.0976142613342500986`\), 
+              \(-0.301193376913333477`\), \(-9.46325867256967079`\), 
+              "0.0417008068845833612`", \(-0.111827285770833362`\), 
+              \(-0.826337899274333587`\)},
+           
+             {\(-0.0976142613342500453`\), \(-20.605510580388664`\), 
+              \(-0.305124765150666776`\), "0.0416287516098333387`", 
+              \(-9.46823144817800788`\), \(-0.834523933296833675`\), 
+              \(-0.111971067649750022`\)},
+           
+             {\(-0.301193376913333477`\), \(-0.305124765150666732`\), 
+              \(-0.791596983391999931`\), "0.203035112787666705`", 
+              "0.205368834401083377`", \(-0.19951209160266675`\), 
+              \(-0.196316310884833367`\)},
+           
+             {\(-9.46325867256966901`\), "0.0416287516098333476`", 
+              "0.20303511278766666`", \(-17.6882389283299934`\), 
+              "0.0115672429915416707`", "0.106392429393916621`", 
+              "0.619139221141666595`"},
+           
+             {"0.0417008068845833435`", \(-9.46823144817800432`\), 
+              "0.205368834401083333`", "0.0115672429915416641`", 
+              \(-17.6882136916613363`\), "0.624124590191333261`", 
+              "0.106536093349833316`"},
+           
+             {\(-0.111827285770833384`\), \(-0.834523933296833675`\), 
+              \(-0.199512091602666696`\), "0.106392429393916709`", 
+              "0.624124590191333439`", \(-0.42079889308466658`\), 
+              \(-0.0108698219606666789`\)},
+           
+             {\(-0.82633789927433412`\), \(-0.111971067649750044`\), 
+              \(-0.196316310884833367`\), "0.619139221141666862`", 
+              "0.106536093349833294`", \(-0.0108698219606666658`\), 
+              \(-0.414397140016999809`\)}
+            }], ")"}],
+      (MatrixForm[ #]&)]], "Output"],
+
+Cell[BoxData[
+    InterpretationBox[
+      RowBox[{"(", GridBox[{
+            {\(-2.89151483333333345`\)},
+            {\(-2.89405816666666648`\)},
+            {\(-0.543398416666666772`\)},
+            {\(-2.59223220833333378`\)},
+            {\(-2.59227537499999982`\)},
+            {\(-0.297495666666666647`\)},
+            {\(-0.295327416666666664`\)}
+            }], ")"}],
+      MatrixForm[
+       {-2.8915148333333334, -2.8940581666666665, -0.54339841666666677,
+         -2.5922322083333338, -2.5922753749999998, -0.29749566666666666,
+         -0.29532741666666668}]]], "Output"],
+
+Cell[BoxData[
+    InterpretationBox[
+      RowBox[{"(", GridBox[{
+            {"0.0221525244299617529`"},
+            {"0.0220490302471312116`"},
+            {"0.37841945004437969`"},
+            {"0.170412890339488569`"},
+            {"0.170511234856734139`"},
+            {"0.754250125496307877`"},
+            {"0.76192495621150158`"}
+            }], ")"}],
+      MatrixForm[
+       {0.022152524429961754, 0.022049030247131212, 0.37841945004437971, 
+        0.17041289033948856, 0.17051123485673414, 0.75425012549630788, 
+        0.76192495621150158}]]], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    RowBox[{
+      RowBox[{"A", "=", 
+        RowBox[{\(\[Sum]\+\(i = 1\)\%NT\), 
+          RowBox[{\(ILI[i]\), ".", 
+            RowBox[{"(", 
+              RowBox[{\(GL.Ginv.TGL\), "-", 
+                RowBox[{
+                  StyleBox[
+                    RowBox[{"I", 
+                      StyleBox["dentityMatrix",
+                        "MR"]}]], 
+                  StyleBox["[",
+                    "MR"], 
+                  StyleBox["NL",
+                    "MR"], 
+                  StyleBox["]",
+                    "MR"]}]}], ")"}], ".", \(ILI[i]\)}]}]}], ";", "\n", 
+      \(B = \[Sum]\+\(i = 1\)\%NT ILI[i].\((GL.Ginv.TGT)\).PTI[i]\), ";", 
+      "\n", \(MatrixForm[A]\), ";", "\n", \(MatrixForm[B]\), ";", "\n", 
+      \(MatrixForm[L = Inverse[A].B]\)}]], "Input",
+  FontSize->18],
+
+Cell[BoxData[
+    InterpretationBox[
+      RowBox[{"(", GridBox[{
+            {"0.0221525244299617174`"},
+            {"0.0220490302471311627`"},
+            {"0.378419450044379557`"},
+            {"0.170412890339488605`"},
+            {"0.170511234856734184`"},
+            {"0.75425012549630761`"},
+            {"0.761924956211501491`"}
+            }], ")"}],
+      MatrixForm[
+       {0.022152524429961715, 0.022049030247131163, 0.37841945004437955, 
+        0.17041289033948862, 0.1705112348567342, 0.75425012549630766, 
+        0.76192495621150147}]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(XP[i_]\  := \ Ginv.\((TGT.PTI[i] - TGL.ILI[i].L)\)\), 
+    \(\tMatrixForm[XP[1]]\)}], "Input"],
+
+Cell[BoxData[
+    InterpretationBox[
+      RowBox[{"(", GridBox[{
+            {\(-0.000477220775544062103`\)},
+            {"0.0281191463763715532`"},
+            {"0.112207183616140038`"},
+            {"0.00126712001609414448`"},
+            {"0.00030185131700124046`"},
+            {"0.999942886794652885`"},
+            {\(-0.0000625203132940879147`\)},
+            {"0.000295002977183982864`"}
+            }], ")"}],
+      MatrixForm[
+       {-0.00047722077554406212, 0.028119146376371553, 0.11220718361614003, 
+        0.0012671200160941445, 0.00030185131700124048, 0.99994288679465282,
+         -6.2520313294087915*^-05, 0.00029500297718398287}]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(MatrixForm[\((ILI[5].L + GL.XP[5])\)]\), 
+    \(MatrixForm[GT.XP[5]]\)}], "Input"],
+
+Cell[BoxData[
+    InterpretationBox[
+      RowBox[{"(", GridBox[{
+            {"0.000319485242431658278`"},
+            {"0.999942519953871133`"},
+            {\(-0.000182088570824092155`\)},
+            {\(-0.0000225562524536531583`\)},
+            {\(-0.0000573603730249352228`\)}
+            }], ")"}],
+      MatrixForm[
+       {0.00031948524243165829, 0.99994251995387118, -0.00018208857082409216,
+         -2.2556252453653159*^-05, -5.736037302493522*^-05}]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(MatrixForm[diag\  = \ {{a, 0, 0}, {0, b, 0}, {0, 0, c}}]\), 
+    \(MatrixForm[any = {{p1, p2, p3}, {q1, q2, q3}, {r1, r2, r3}}]\), 
+    \(MatrixForm[diag.any]\), 
+    \(MatrixForm[any.diag]\)}], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", GridBox[{
+            {"a", "0", "0"},
+            {"0", "b", "0"},
+            {"0", "0", "c"}
+            }], ")"}],
+      (MatrixForm[ #]&)]], "Output"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", GridBox[{
+            {"p1", "p2", "p3"},
+            {"q1", "q2", "q3"},
+            {"r1", "r2", "r3"}
+            }], ")"}],
+      (MatrixForm[ #]&)]], "Output"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", GridBox[{
+            {\(a\ p1\), \(a\ p2\), \(a\ p3\)},
+            {\(b\ q1\), \(b\ q2\), \(b\ q3\)},
+            {\(c\ r1\), \(c\ r2\), \(c\ r3\)}
+            }], ")"}],
+      (MatrixForm[ #]&)]], "Output"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", GridBox[{
+            {\(a\ p1\), \(b\ p2\), \(c\ p3\)},
+            {\(a\ q1\), \(b\ q2\), \(c\ q3\)},
+            {\(a\ r1\), \(b\ r2\), \(c\ r3\)}
+            }], ")"}],
+      (MatrixForm[ #]&)]], "Output"]
+}, Open  ]]
+},
+FrontEndVersion->"X 3.0",
+ScreenRectangle->{{0, 1600}, {0, 1200}},
+CellGrouping->Manual,
+WindowSize->{935, 770},
+WindowMargins->{{74, Automatic}, {164, Automatic}},
+PrintingPageRange->{Automatic, Automatic},
+PrintingOptions->{"PaperSize"->{612, 792},
+"PaperOrientation"->"Portrait",
+"Magnification"->1}
+]
+
+
+(***********************************************************************
+Cached data follows.  If you edit this Notebook file directly, not using
+Mathematica, you must remove the line containing CacheID at the top of 
+the file.  The cache data will then be recreated when you save this file 
+from within Mathematica.
+***********************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+Cell[1709, 49, 197, 4, 112, "Input"],
+
+Cell[CellGroupData[{
+Cell[1931, 57, 696, 15, 476, "Input"],
+Cell[2630, 74, 2309, 44, 273, "Output"],
+
+Cell[CellGroupData[{
+Cell[4964, 122, 280, 7, 229, "Input"],
+Cell[5247, 131, 1932, 39, 244, "Output"],
+Cell[7182, 172, 585, 14, 200, "Output"],
+Cell[7770, 188, 567, 14, 200, "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[8386, 208, 814, 21, 229, "Input"],
+Cell[9203, 231, 567, 14, 200, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[9807, 250, 115, 2, 61, "Input"],
+Cell[9925, 254, 664, 15, 226, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[10626, 274, 103, 2, 61, "Input"],
+Cell[10732, 278, 475, 11, 148, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[11244, 294, 224, 4, 113, "Input"],
+Cell[11471, 300, 200, 7, 83, "Output"],
+Cell[11674, 309, 209, 7, 83, "Output"],
+Cell[11886, 318, 254, 7, 83, "Output"],
+Cell[12143, 327, 254, 7, 83, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+
+
+
+(***********************************************************************
+End of Mathematica Notebook file.
+***********************************************************************)
+

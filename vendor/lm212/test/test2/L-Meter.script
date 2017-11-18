@@ -1,0 +1,2 @@
+/bin/csh -c " cd /home/rsfq1/sasha/cadence/designs/dl1ulm ; /home/rsfq1/sasha/cadence/lmeter/lmeter lmeter.term /home/rsfq1/cad/tech/hypres/cds.lm.dfl < lmeter.dxc > lmeter.out "  
+(cd /home/rsfq1/sasha/cadence/designs/dl1ulm  ; /usr/bin/tcsh  )
