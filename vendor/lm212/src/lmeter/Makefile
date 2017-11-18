@@ -24,7 +24,7 @@ CFLAGS = -DLONGCNF -Icsspdms -g -O3 \
 # +O3 -Aa
 #-O2 -mips2  
 
-LDFLAGS = -static
+LDFLAGS = 
 
 MALLOCDEBUG = 
 #-lefence

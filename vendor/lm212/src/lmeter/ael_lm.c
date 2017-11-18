@@ -34,7 +34,7 @@
 edgelist        oldael;		/* for filling bottom (dirs 5,6,7) part of rcf  */
 edgelist        newael;		/* ael with hor. edges,they are deleted later.  */
 
-change_ael ()
+void change_ael ()
 {
     edgelist       *yelptr;
     sbyte           inew, iyel, iael;

@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS = -O6 -g 
-LDFLAGS = -static
+LDFLAGS = 
 
 lm2sch: lm2sch.o linalg.o
 	$(CC) $(CFLAGS) $(LDFLAGS)  -o lm2sch lm2sch.o linalg.o -lm 
