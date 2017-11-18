@@ -34,6 +34,7 @@
 *******************************************************************************
 */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -137,7 +138,6 @@ struct
  */
 int die(char *where, char *what)
 {
-	extern int errno;
 
 	fprintf(stderr, "ERROR: %s", where);
 	if (what)  fprintf(stderr, ": %s",what);

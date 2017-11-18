@@ -5,7 +5,7 @@
 SHELL = /bin/csh
 
 CC = gcc
-MAKE = gmake
+MAKE = make
 CPP = $(CC) -M 
 
 #	The following -Defines may be added here:
