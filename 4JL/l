@@ -1,0 +1,6 @@
+ ltm $1
+ cif2dxc $1.cif2 > $1.dxc
+ mv lmeter.term $1.lm
+ mv term.name $1.name                
+ lmeter $1.lm < $1.dxc > $1.out
+ lm2sch -n $1.spi -t $1.name -c $1.out -o $1.ind 

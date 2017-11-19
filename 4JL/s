@@ -1,0 +1,1 @@
+lm2sch -n $1.spi -t $1.name -c $1.out -o $1.ind 

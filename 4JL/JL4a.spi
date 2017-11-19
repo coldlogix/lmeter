@@ -1,0 +1,18 @@
+* Cold Coldlogix test A
+L1 1 4 2
+L2 5 0 2
+L3 3 11 5
+L4 11 2 2
+L5 11 6 3
+
+P1 1 0
+P2 2 0
+P3 4 3
+P4 4 5
+
+P5 7 6
+P6 7 0
+
+
+.END
+* Thomas & Jonathan Nov 14 2017
