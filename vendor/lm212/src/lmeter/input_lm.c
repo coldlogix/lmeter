@@ -387,6 +387,7 @@ void readline ()
     iyline++;
     if (fscanf (topf, "%d %d", &cy, &nx) != 2)
 	error ("can't read yline header ");
+    printf("Deugging readline: %d %d\n", cy, nx);
     yline.y = cy;
     yline.isnotlast = (iyline < nylines);
     if (nx == 0)
@@ -403,6 +404,7 @@ void readline ()
     {
 	if (fscanf (topf, "%d %d", &x, &nex) != 2)
 	    error ("can't read xrec  header ");
+    printf("Deugging readline2: %d %d\n", x, nex);
 	ne += nex;
 	elsp[ix].len = nex;
 	if (nex)
@@ -447,7 +449,7 @@ void readline ()
     Free (elsp);
 
 #ifndef	BGIGRAPH
-#if 0
+#if 1
     {
 	extern double   getrealy (coord y);
 	float           y = getrealy (cy);

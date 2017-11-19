@@ -42,6 +42,9 @@ void change_ael ()
 
     oldael = ael;		/* save current ael     */
 
+    printf("Debugging ael 1\n");
+    dump_ael ();
+
     yelptr = &(yline.el);
     newael.len = 0;
     if (yelptr->len == 0 && ael.len == 0)
@@ -50,6 +53,8 @@ void change_ael ()
 
     assert (test_ael_sort ());
 
+    printf("Debugging ael 2\n");
+    dump_ael ();
     nremoved = inew = iyel = iael = 0;
     while (iyel < yelptr->len && iael < ael.len)
     {
@@ -76,15 +81,19 @@ void change_ael ()
 	    iyel++;
 	}
     }
+
+    printf("Debugging ael 2\n");
+    dump_ael ();
+
     /* only one 'while' will be entered     */
     while (iyel < yelptr->len)
 	newael.edges[inew++] = yelptr->edges[iyel++];
     while (iael < ael.len)
 	newael.edges[inew++] = ael.edges[iael++];
 
-/*      printf("change_ael: inew=%u nremoved=%u\n",(unsigned)inew,(unsigned)nremoved);
- *    printf("change_ael: iael=%u iyel=%u\n",(unsigned)iael,(unsigned)iyel);
- */
+    printf("change_ael: inew=%u nremoved=%u\n",(unsigned)inew,(unsigned)nremoved);
+    printf("change_ael: iael=%u iyel=%u\n",(unsigned)iael,(unsigned)iyel);
+
     assert (inew + nremoved == iael + iyel);
     /* oldael is freed in fill_rcf  */
     ael.len = newael.len = inew;

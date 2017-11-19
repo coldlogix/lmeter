@@ -1,4 +1,8 @@
-   1	   1	      0.38637101
-   1	   2	     -0.10843083
-   2	   1	     -0.10843296
-   2	   2	      0.76007888
+unsort edge=4   
+
+e=0    x=750  c0=750  dx=0    c0+dx=750  dir=2    ecnf=8        tcnf=0       
+e=1    x=750  c0=750  dx=0    c0+dx=750  dir=0    ecnf=8        tcnf=0       
+e=2    x=1250 c0=1250 dx=0    c0+dx=1250 dir=2    ecnf=8        tcnf=0       
+e=3    x=1250 c0=1250 dx=0    c0+dx=1250 dir=0    ecnf=8        tcnf=0       
+e=4    x=0    c0=0    dx=0    c0+dx=0    dir=0    ecnf=0        tcnf=0       
+e=5    x=0    c0=0    dx=0    c0+dx=0    dir=0    ecnf=0        tcnf=0       
