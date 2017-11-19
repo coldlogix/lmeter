@@ -53,11 +53,12 @@ void change_ael ()
 
     assert (test_ael_sort ());
 
-    printf("Debugging ael 2\n");
+    printf("Debugging ael 2: %d\n", ael.len);
     dump_ael ();
     nremoved = inew = iyel = iael = 0;
     while (iyel < yelptr->len && iael < ael.len)
     {
+    printf ("DD2: %d %d %d %d\n", iyel,  yelptr->len, iael, ael.len);
 	if (GETX_AEL < GETX_YEL)
 	    newael.edges[inew++] = ael.edges[iael++];
 	else if (GETX_YEL < GETX_AEL)
@@ -82,8 +83,9 @@ void change_ael ()
 	}
     }
 
-    printf("Debugging ael 2\n");
+    printf("Debugging ael 3... inew:%d\n", inew);
     dump_ael ();
+    printf("the 4: %d %d %d %d\n", iyel , yelptr->len, iael , ael.len);
 
     /* only one 'while' will be entered     */
     while (iyel < yelptr->len)
