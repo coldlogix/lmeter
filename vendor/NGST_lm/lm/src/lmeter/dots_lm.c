@@ -61,7 +61,7 @@ static inline int parity (coord y)
  *    Emit dots in x-direction from the points from ael
  *      by calling line_dots for each edge crossing current y-line.
  */
-dotter_1d (edgelist el)		/*      el==ael */
+void dotter_1d (edgelist el)		/*      el==ael */
 {
     byte            e, step, k1;
     point          *p, *pmax;
@@ -90,7 +90,7 @@ dotter_1d (edgelist el)		/*      el==ael */
  *      by calling line_dots for different ys. Those ys are chosen by the
  *      algorithm similar to one used in line_dots.
  */
-dotter_2d (edgelist el)		/*      el==yline.el    */
+void dotter_2d (edgelist el)		/*      el==yline.el    */
 {
     coord           xl, xr, xl1, xr1;
     byte            e;
