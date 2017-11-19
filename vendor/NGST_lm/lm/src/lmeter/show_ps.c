@@ -59,7 +59,7 @@ static FILE    *pshead, *psgrid, *psgeom;
 /*
  *    PS file creation/closing
  */
-show_init ()
+void show_init ()
 {
     /* NB: this procedure should be called only after 
      * xmax, ymax are defined and xmin=0, ymin=0
@@ -152,7 +152,7 @@ show_init ()
 
 }				/* end of show_init */
 
-show_end ()
+void show_end ()
 {
     char            buffer[1024];
 
@@ -297,7 +297,7 @@ struct patlink
 
 #define OFFSET 0.25
 
-show_pattern (coord x, struct patlink *pattern, int rank)
+void show_pattern (coord x, struct patlink *pattern, int rank)
 {
     int             s, l;
     int             gx = x, gy = usedline;
