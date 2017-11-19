@@ -23,16 +23,18 @@
 #include"lmeter.h"
 #include"head_lm.h"
 
-#define	Ver	12
+#define	Ver	13
 
 char            CopyRightMessage[] = 
-"* L-Meter 2.%02d Copyright (C) 1992-1999 Paul I. Bunyk\n"
+"* L-Meter 2.%02d Copyright (C) 1992-2001 Paul I. Bunyk\n"
+"* pbunyk@trw.com\n"
 "* Based on the algorithms by Sergey V. Rylov\n"
 "* RSFQ Laboratory, Department of Physics\n" 
 "*\tSUNY, Stony Brook, NY, 11794-3800\n"
 "* Laboratory of Cryoelectronics, Department of Physics\n"
 "*\tMoscow State University, Moscow, Russia, 119899\n"
-"* paul@rsfq1.physics.sunysb.edu\n"
+"* Superconducting Electronics Organisation, TRW\n"
+"*\tOne Space Park, Redondo Beach, CA, 90278\n"
 "* This is free software, and you are welcome to redistribute it\n"
 "* under the conditions of Gnu Public License (GPL)\n"
 "* This software comes with ABSOLUTELY NO WARRANTY\n";

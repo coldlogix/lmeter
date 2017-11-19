@@ -5,7 +5,7 @@
 SHELL = /bin/csh
 
 CC = gcc
-MAKE = gmake
+MAKE = make
 CPP = $(CC) -M 
 
 #	The following -Defines may be added here:
@@ -16,20 +16,22 @@ CPP = $(CC) -M
 #	-DLONGCNF to use long long for config vectiors, allowing 64 terminals
 #	-DPTHREADS to use multithreading in solver. Usable with Linux Threads.
 
-CFLAGS = -DLONGCNF -Icsspdms -g -O3 \
-	-finline-functions -funroll-loops -ffast-math \
-	-DPSGRAPH
-# -DPTHREADS -DNUMTHREADS=2 
-# -g -O3 -DPSGRAPH -finline-functions
-# +O3 -Aa
-#-O2 -mips2  
+CFLAGS = -Icsspdms -g -O6  \
+	-finline-functions -funroll-loops -ffast-math -DPSGRAPH \
+	-DLONGCNF
+# -DPSGRAPH -DSHOWFLOW
+#	-DPTHREADS -DNUMTHREADS=2  \
+#	-march=i686 -malign-double -fomit-frame-pointer \
 
-LDFLAGS = -static
+# -g -O3 -DPSGRAPH -finline-functions
+
+LDFLAGS = 
 
 MALLOCDEBUG = 
 #-lefence
 
-# THREADLIB = -lpthread
+THREADLIB = 
+#-lpthread
 
 MAKEDEFS = CC='$(CC)' CPP='$(CPP)' CFLAGS='$(CFLAGS)' 
 

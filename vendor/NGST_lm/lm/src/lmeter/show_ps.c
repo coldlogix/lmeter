@@ -34,6 +34,11 @@
 
 #define	PICTURE	"grid.ps"
 
+/* Is it a presentation print-out or a (somehow useful) 
+ * grid debugging print-out?
+ */
+#define DEBUGGRID 1
+
 /* Do we really want PostScript printout?       */
 static int      skipPSp = 0;
 
@@ -83,8 +88,10 @@ show_init ()
     scale = MIN ((PAPERX - 2 * XOFFSET) / xmax / sqrt (2), (PAPERY - 2 * YOFFSET) / ymax / sqrt (2));
     fprintf (psgrid, "0 setlinewidth\n");
     fprintf (pshead, "%g %g scale\n", scale, scale);
+#if DEBUGGRID==0
     fprintf (pshead, "%g 0 translate\n", ymax / sqrt (2));
     fprintf (pshead, "1 0.5 scale 45 rotate\n");
+#endif
     fprintf (pshead, "2 setlinecap\n");
 
     /*
@@ -98,6 +105,8 @@ show_init ()
     fprintf (pshead, "/s  {stroke} 				def\n");
     fprintf (pshead, "/lr {2 copy rlineto neg exch neg exch rmoveto}	def\n");
     fprintf (pshead, "/t  {setlinewidth} 			def\n");
+    fprintf (pshead, "/np {newpath}  			        def\n");
+    fprintf (pshead, "/cp {closepath} 				def\n");
 
     /*
      *    Available colors:
@@ -120,6 +129,7 @@ show_init ()
      */
 
     fprintf (pshead, "\
+/c0  {0 0 0 		setrgbcolor} def\n \
 /c1  {1 0 0 		setrgbcolor} def\n \
 /c2  {0 1 0 		setrgbcolor} def\n \
 /c3  {0 0 1 		setrgbcolor} def\n \
@@ -211,6 +221,9 @@ show_aelgm ()
     if (skipPSp)
 	return;
 
+#if DEBUGGRID
+    return;
+#endif
     for (l = 0; l < ncolors; l++)
     {
 	horedge[l] = 0;
@@ -280,13 +293,16 @@ struct patlink
 #define	MOVETO(x,y) 	fprintf(psgrid,"%g %g m\n",(float)x,(float)y)
 #define	STROKE()	fprintf(psgrid," s\n")
 #define	LINEREL(x,y)	fprintf(psgrid," %g %g lr\n",(float)x,(float)y)
+#define	CIRCLE(x,y,r,c)	fprintf(psgrid," np %g %g %g 0 360 arc cp c%d fill c0 \n",(float)x,(float)y,(float)r, (int)c)
 
-show_pattern (coord x, struct patlink *pattern)
+#define OFFSET 0.25
+
+show_pattern (coord x, struct patlink *pattern, int rank)
 {
     int             s, l;
     int             gx = x, gy = usedline;
-    enum dtag       lastd;
-    int             len;
+    enum dtag       thisd, otherd;
+    float           len;
 
     if (skipPSp)
 	return;
@@ -295,13 +311,24 @@ show_pattern (coord x, struct patlink *pattern)
     MOVETO (gx, gy);
     for (s = 0; s < 8; s++)
     {
-	lastd = pattern[s].d_nd;
-	len = pattern[s].l;
-	if (len)
-	    LINEREL (+dx[lastd][s] * len, -dy[lastd][s] * len);
+	thisd = pattern[s].d_nd;
+	otherd = (thisd+1)%2;
+	/*
+	 * Do not ask me why (and how) this works, but it does. Maybe an extra but of
+	 * effort would achieve the desired result with one simple formula.
+	 */
+	len = 0.5*pattern[s].l;
+	if (len > 0.0)
+	  if (thisd == 0)
+	    LINEREL (+(dx[thisd][s] != 0 ?  dx[thisd][s] : OFFSET*dx[otherd][s]) * len , 
+		     -(dy[thisd][s] != 0 ?  dy[thisd][s] : OFFSET*dy[otherd][s]) * len);
+	  else
+	    LINEREL (+(dx[thisd][s] + OFFSET*dx[otherd][s])/sqrt(1+OFFSET) * len , 
+		     -(dy[thisd][s] + OFFSET*dy[otherd][s])/sqrt(1+OFFSET) * len);
     }
     STROKE ();
-
+    /* Draw a filled circle around node */
+    CIRCLE (gx, gy, 0.25, rank);
 }				/*end of show_pattern */
 
 #endif

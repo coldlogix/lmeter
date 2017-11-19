@@ -43,7 +43,7 @@ struct patlink
     short           l;
 };
 
-/* where should I move to find neibourgh in sector with direction ?     */
+/* where should I move to find neighbour in sector with direction ?     */
 signed char     dx[2][8] =
 {
     {+1, 0, 0, -1, -1, 0, 0, +1},	/* for nd               */
@@ -55,7 +55,7 @@ signed char     dy[2][8] =
     {-1, -1, -1, -1, +1, +1, +1, +1}	/* for d                */
 };
 
-/* in what sector am I for my neibourgh in sector,with direction ?      */
+/* in what sector am I for my neighbour in sector,with direction ?      */
 byte            nbrsectors[2][8] =
 {
     {3, 6, 5, 0, 7, 2, 1, 4},	/* for nd               */
@@ -120,7 +120,7 @@ build_line_eqs (void *mytask)
 
 	    build_pattern (x, pattern);
 #ifdef PSGRAPH
-	    show_pattern (x, pattern);
+	    show_pattern (x, pattern, eqsource[0][x].isused - 1);
 #endif
 	    point_eqs (x, pattern, ithr);
 	}
@@ -320,7 +320,7 @@ point_eqs (coord x, struct patlink * pattern, int ithr)
     ownrcf = configs + eqsource[0][x].incnf;
     ownbasvar = eqsource[0][x].varnum;
     ownneld = ownrcf->neld;
-    /* To find all neibourghs use information in pattern.           */
+    /* To find all neighbours use information in pattern.           */
     /* Initialize BVars with nbrbasvars & ownbasvar in sorted order. */
     NBVars = 1;
     BVars[0] = ownbasvar;
@@ -631,6 +631,22 @@ point_eqs (coord x, struct patlink * pattern, int ithr)
 	    PTARHSs[t][term] = 0.0;
 	}
     }				/*      for     */
+#ifdef SHOWFLOW
+    for (i = 1; i <= ownneld; i++)
+      {
+	int imetl;
+	for (l=1; l <= nlay; l++)
+	  if (i == ownrcf->layels[l].ield)
+	    {
+	      imetl = ownrcf->layels[l].imetl;
+	      break;
+	    }
+	SpVectorAdd (XYZ->Cols + 0, i + ownbasvar - 1, (FloatType) x);
+	SpVectorAdd (XYZ->Cols + 1, i + ownbasvar - 1, (FloatType) y);
+	SpVectorAdd (XYZ->Cols + 2, i + ownbasvar - 1, (FloatType) imetl-1);
+      }
+#endif
+
     return 0;
 }				/*  end of point_eqs */
 
@@ -657,14 +673,14 @@ num_vars (void)
 }				/*      num_vars        */
 
 /*
- *    That is the function to build pattern - array,where described
- *      the direction and length to move to the neibourgh in all 8 sectors.
+ *    That is the function to build pattern - array which describes
+ *    the direction and length to move to the neighbour in all 8 sectors.
  */
 
 build_pattern (coord x, struct patlink *pattern)
 {
     enum dtag       move45;
-    byte            klookat, kpoint, kfinal, nsetted;
+    byte            klookat, kpoint, kfinal, nset;
     unsigned        step;
     byte            s, s1;	/* slots */
     int             deltax, deltay;
@@ -677,15 +693,20 @@ build_pattern (coord x, struct patlink *pattern)
     assert (eqsource[0][x].isused);
     kpoint = eqsource[0][x].isused - 1;		/* 1 was added while storing    */
     assert (kpoint <= kmax);
-/*      search neighbour at     :
- *    K-KPOINT:       -1 -1  0  0  1  1
- *      D_ND    :       ND  D ND  D ND  D
- */ klookat = (kpoint == 0) ? 0 : kpoint - 1;
+    /*    search for neighbour in the following order 
+     *    K-KPOINT:      -2 -2  -1 -1  0  0  1  1
+     *    D_ND    :      ND  D  ND  D ND  D ND  D
+     *
+     * For higher-k nodes when 45 degree lines are present, sometimes we should
+     * start at kpoint-2. Paul B., 12/16/02
+     */
+    klookat = (kpoint == 0) ? 0 : kpoint - 1;
+    if (klookat > 0) klookat--;
     kfinal = (kpoint == kmax) ? kmax : kpoint + 1;
     move45 = ND;
-    nsetted = 0;
+    nset = 0;
     step = POW2 (klookat);
-    while (nsetted < 8 && klookat <= kfinal)
+    while (nset < 8 && klookat <= kfinal)
     {
 	for (s = move45; s < 8; s += 2)
 	{
@@ -706,14 +727,14 @@ build_pattern (coord x, struct patlink *pattern)
 		{
 		    pattern[s1].l = step;
 		    pattern[s1].d_nd = move45;
-		    nsetted++;
+		    nset++;
 		}
 		s1 = (s) ? s - 1 : 7;
 		if (pattern[s1].l == 0)
 		{
 		    pattern[s1].l = step;
 		    pattern[s1].d_nd = move45;
-		    nsetted++;
+		    nset++;
 		}
 	    }
 	}

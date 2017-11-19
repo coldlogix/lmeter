@@ -43,8 +43,8 @@
 #include "linalg.h"
 #include <unistd.h>
 
-#define MAX_EDGES  1024
-#define MAX_NODES 1024
+#define MAX_EDGES  2048
+#define MAX_NODES 2048
 #define MAX_TERMS 64
 #define MAX_NODE_DEGREE 4
 #define MAX_NAME_LEN 16
@@ -74,6 +74,7 @@ struct
 	int  nodes[2];           /* Two nodes elt is connected to */
 	double flow[MAX_TERMS];  /* current flow in all "experiments" */
 	int  knowflow;           /* Do we already know the current? */
+	int redundant;           /* Is it a redundant inductor (in series with another)? */
 	/* inductances/mutual inductances */
 	double value;            /* computed inductance */
  	double oldvalue;         /* "netlist" inductance */
@@ -164,6 +165,7 @@ void ReadSpiceNetlist(char *fname)
 	while (fgets(line, MAX_LINE_LEN, f))
 	{
 	    int numfields;
+	    char unit;
 
 	    /* skip whitespace */
 	    lptr = line;
@@ -176,10 +178,22 @@ void ReadSpiceNetlist(char *fname)
 		|| lptr[0] == '+') 
 		continue; /* A special or empty SPICE card, ignored */
 
-	    numfields = sscanf(lptr,"%s %s %s %lf", name, &l1, &l2, &value);
+	    numfields = sscanf(lptr,"%s %s %s %lf%c", name, &l1, &l2, &value, &unit);
 	    /* card should have at least name and two nodes */
 	    if (numfields <  3) die("bad SPICE card",line); 
 	    if (numfields == 3) value = 0.0;
+
+	    /* RSFQ Inductances are measured in either PSCAN units or pH,
+	     * but some people offer also the choice of n, p or f 
+	     * multipliers
+	     */
+	    if (numfields == 5)	      
+	      switch (toupper(unit))
+		{
+		case 'N': value *= 1000; break;
+		case 'P': value *= 1; break;
+		case 'F': value *= 0.001; break;
+		}
 
 	    numEdges++;
 	    numEdges < MAX_EDGES || die("table overflow", 
@@ -193,7 +207,10 @@ void ReadSpiceNetlist(char *fname)
 		break;
 	    case 'P':
 	    case 'J':
+	    case 'B':
 	    case 'I':
+	    case 'C':
+	    case 'Q':
 		edges[numEdges].type = TERM; 
 		numTerms++;
 		break;
@@ -208,6 +225,7 @@ void ReadSpiceNetlist(char *fname)
 		edges[numEdges].type = UNUSED; 		  
 		break;
 	    }
+	    edges[numEdges].redundant = 0;
 	    switch (edges[numEdges].type)
 	    {
 	    case UNUSED:
@@ -438,10 +456,13 @@ void BuildNodes()
 
 void CheckNetlist()
 {
+#define DROPPED_NODE -1
 	int n, e;
 	/* this table is used to skip zero-degree nodes */
 	int nodeTranslate[MAX_NODES];
 	int numRealNodes = 0;
+	int firstremoved = -1;
+	int redundantInds = 0;
 
 	/* 
 	 * Get rid of all zero-degree nodes.
@@ -450,19 +471,86 @@ void CheckNetlist()
 	nodeTranslate[0] = 0;
 	for (ALL_NODES(n))
 	{
-		if (nodes[n].numEdges == 0)
+		assert(nodes[n].numEdges >= 0); 
+		switch (nodes[n].numEdges)
 		{
-			fprintf(stderr,"# CheckNetlist: Node %d of degree 0 removed\n", n);
-			nodeTranslate[n] = 0;
-		}
-		else
+		case 0: /* unused node, remove it */
+			if (firstremoved == -1) firstremoved = n; 
+			nodeTranslate[n] = DROPPED_NODE;
+			break;
+		case 1: /* node with just one element? Strange... */
+			die("Hanging element", edges[abs(nodes[n].edges[0])].name);
+			break;
+		case 2: /* maybe common node of two inductors in series, check that */
+			if (edges[abs(nodes[n].edges[0])].type == IND 
+			    && edges[abs(nodes[n].edges[1])].type == IND) 
+			{
+				fprintf(stderr, "# CheckNetlist: Redundant inductors in series: %s & %s\n", 
+					edges[abs(nodes[n].edges[0])].name,				
+					edges[abs(nodes[n].edges[1])].name);
+				edges[abs(nodes[n].edges[1])].redundant = 1;
+				nodeTranslate[n] = DROPPED_NODE;
+				redundantInds++;
+				if (firstremoved == -1) firstremoved = n; 
+				break;
+			}
+		default:
 			nodeTranslate[n] = ++numRealNodes;
+			if (firstremoved > -1)
+			{
+				fprintf(stderr,"# CheckNetlist: Node(s) %d-%d of degree 0 removed\n", 
+					firstremoved, n-1);
+				firstremoved = -1;
+			}
+		}
 	}
-	/* 
-	 * Then renumber nodes in edges if necessary 
-	 */
+
 	if (numNodes != numRealNodes)
 	{
+		/*
+		 * Remove redundant inductors
+		 */
+		while (redundantInds)
+			for (ALL_EDGES(e))
+				if (edges[e].type == IND && edges[e].redundant == 1)
+				{
+					int n0 = edges[e].nodes[0];
+					int n1 = edges[e].nodes[1];
+
+					/* If one of two nodes has a valid translation,
+					 * then translate the other one to that number 
+					 * (the other node's translation should be invalid)
+					 * 
+					 * If both translations are DROPPED_NODE, then we have more
+					 * than two inductors in series, will take care of
+					 * this on the next iteration of while(redundantInds)
+					 */
+					assert (nodeTranslate[n0] == DROPPED_NODE ||
+						nodeTranslate[n1] == DROPPED_NODE);							
+					if (nodeTranslate[n0] != DROPPED_NODE ||
+					    nodeTranslate[n1] != DROPPED_NODE )
+					{
+						if (nodeTranslate[n0] != DROPPED_NODE)
+							nodeTranslate[n1] = nodeTranslate[n0];
+						else
+							nodeTranslate[n0] = nodeTranslate[n1];
+						redundantInds --;
+						fprintf(stderr, "# CheckNetlist: Redundant inductor %s dropped\n", 
+							edges[e].name);				
+						/* overwrite this edge with the last one
+						 * (but only if it is NOT the last one),
+						 * then check the same position again (e--)
+						 */
+						if (e < numEdges)
+							edges[e--] = edges[numEdges];
+						numEdges--;
+						numInds--;
+					}
+				}
+
+		/* 
+		 * Renumber nodes in edges
+		 */
 		numNodes = numRealNodes;
 		for (ALL_EDGES(e))
 		{
@@ -470,7 +558,8 @@ void CheckNetlist()
 			for (dir=0; dir <= 1; dir++)
 			{
 				int node = edges[e].nodes[dir];
-				assert(node == 0 || nodeTranslate[node] > 0);
+				assert(nodeTranslate[node] != DROPPED_NODE &&
+				       nodeTranslate[node] <= numNodes);
 				edges[e].nodes[dir] = nodeTranslate[node];
 			}
 		}
@@ -635,12 +724,13 @@ double CalculateCurrents()
 				}
 			}
 #if ERROR_PLOT
-				fprintf(errfile,"\n");
+			fprintf(errfile,"\n");
 #endif
 		}
 		fprintf(stderr,"# CalculateCurrents: Iterations: %d\n", numIter);
-		fprintf(stderr,"# Worst currents accuracy: %lf in experiment with terminal \"%s\"\n", 
+		/* fprintf(stderr,"# Worst currents accuracy: %lf in experiment with terminal \"%s\"\n", 
 			maxsum, terms[worst].name);
+		*/
 		fprintf(stdout,"# Worst currents accuracy: %lf in experiment with terminal \"%s\"\n", 
 			maxsum, terms[worst].name);
 		return maxsum;
@@ -709,7 +799,7 @@ void CalculateInductances()
 			}
 			/* Fill PT */
 			for (ALL_TERMS(t))
-                                if (edges[e].termno == t)
+				if (edges[e].termno == t)
 					LA_VAL(PT[t], term, 0) = 1.0;
 			term++;
 			break;
@@ -886,8 +976,9 @@ void CalculateEnergies()
 			worst = t;
 		}
 	}	
-	fprintf(stderr,"# Worst dE: %lg in experiment with terminal \"%s\"\n",
+	/* fprintf(stderr,"# Worst dE: %lg in experiment with terminal \"%s\"\n",
  	       worst_dE, terms[worst].name);
+	*/
 	fprintf(stdout,"# Worst dE: %lg in experiment with terminal \"%s\"\n",
  	       worst_dE, terms[worst].name);
 }
@@ -898,7 +989,7 @@ void WriteReport(char *outname)
 	FILE *out; 
 
 	(out = fopen(outname, "w")) || die("opening", outname);
-	fprintf(stdout,"# %-14s  %-6s %-6s %-6s\n", "name", "layout", "schem", "diff"); 
+	fprintf(stdout,"# %-14s  %-6s %-6s %-6s %+7s\n", "name", "layout", "schem", "diff", "diff%"); 
  	for (ALL_EDGES(e))
 		if (edges[e].type == IND || edges[e].type == MUTUAL )
 		{
@@ -906,11 +997,13 @@ void WriteReport(char *outname)
 			       edges[e].name, 
 			       /* edges[e].oldvalue, */
 			       edges[e].value);
-			printf("%-16s %6.3lf %6.3lf %+6.3lf\n",
+			printf("%-16s %6.3lf %6.3lf %+6.3lf %+7.1lf%%\n",
 			       edges[e].name, 
 			       edges[e].value,
 			       edges[e].oldvalue,
-			       edges[e].oldvalue - edges[e].value);
+			       edges[e].oldvalue - edges[e].value,
+			       100*(edges[e].oldvalue - edges[e].value)/edges[e].oldvalue
+			       );
 		}
 }
 
@@ -948,12 +1041,12 @@ main(int argc, char **argv)
 	fprintf(stderr,"# using: %s %s %s %s\n", 
 	       netlistname, termname, lmoutname, outname);
 	ReadSpiceNetlist(netlistname);
+	BuildNodes();
+	CheckNetlist();
 	ConnectMutuals();
 	ReadTerminalNames(termname);
 	SetTerminalEdges();
 	ReadTermCurrents(lmoutname);
-	BuildNodes();
-	CheckNetlist();
 
 	fprintf(stderr,"# lm2sch: Elements: %d, Nodes: %d, Terms: %d, Inds: %d, Mutuals: %d\n", 
 		numEdges, numNodes, numTerms, numInds, numMutual);

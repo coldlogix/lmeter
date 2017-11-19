@@ -1,0 +1,24 @@
+#Modified lambdas: 0.472 0.000 1.218 0.000 0.027 0.000 0.393 0.000 0.407 
+set xrange  [0:2.0]
+set xtics  0.1
+set ytics  1
+set grid
+set yrange  [-5:5]
+set xlabel "Boundary Admittance Y"
+set ylabel "Relative error, %"
+set title "Fitting LMeter to inductance table"
+#TRIW gaps: 1.839
+plot 100 * (1 - (2.12302285875749 + 1.0/(1.0/(0.18849555) + 2*x/2.00))/1.783) title "TRIW/GND/2.00/0.15" with lines lt 1
+replot 100 * (1 - (2.12302285875749 + 1.0/(1.0/(0.18849555) + 2*x/20.00))/2.224) title "TRIW/GND/20.00/0.15" with lines lt 1
+#WIRA gaps: GND: 1.249 TRIW: 1.861
+replot 100 * (1 - (2.02388938602893 + 1.0/(1.0/(0.31415925) + 2*x/2.00))/1.573) title "WIRA/TRIW/2.00/0.25" with lines lt 2
+replot 100 * (1 - (2.02388938602893 + 1.0/(1.0/(0.31415925) + 2*x/20.00))/2.198) title "WIRA/TRIW/20.00/0.25" with lines lt 2
+replot 100 * (1 - (1.08597673410079 + 1.0/(1.0/(0.483805245) + 2*x/2.00))/0.941) title "WIRA/GND/2.00/0.385" with lines lt 3
+replot 100 * (1 - (1.08597673410079 + 1.0/(1.0/(0.483805245) + 2*x/20.00))/1.440) title "WIRA/GND/20.00/0.385" with lines lt 3
+#WIRB gaps: GND: 1.864 TRIW: 2.475 WIRA: 1.420
+replot 100 * (1 - (1.00484996890864 + 1.0/(1.0/(0.77911494) + 2*x/3.50))/1.091) title "WIRB/WIRA/3.50/0.62" with lines lt 4
+replot 100 * (1 - (1.00484996890864 + 1.0/(1.0/(0.77911494) + 2*x/20.00))/1.567) title "WIRB/WIRA/20.00/0.62" with lines lt 4
+replot 100 * (1 - (2.04189609356534 + 1.0/(1.0/(1.06814145) + 2*x/3.50))/1.710) title "WIRB/TRIW/3.50/0.85" with lines lt 5
+replot 100 * (1 - (2.04189609356534 + 1.0/(1.0/(1.06814145) + 2*x/20.00))/2.642) title "WIRB/TRIW/20.00/0.85" with lines lt 5
+replot 100 * (1 - (1.1039834416372 + 1.0/(1.0/(1.237787445) + 2*x/3.50))/1.224) title "WIRB/GND/3.50/0.985" with lines lt 7
+replot 100 * (1 - (1.1039834416372 + 1.0/(1.0/(1.237787445) + 2*x/20.00))/1.954) title "WIRB/GND/20.00/0.985" with lines lt 7

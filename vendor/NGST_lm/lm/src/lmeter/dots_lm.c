@@ -30,22 +30,32 @@
 
 #undef	NO_SUBBND_DEC		/* undef this to decimate subboundary points      */
 
-#define PSYNC(x)	{ if	( ((x) + step)%(2*step) ) 	x +=step; }
-#define PSYNC45(x)	{ if	( !(((x) + step)%(2*step)) )	x +=step; }
-#define NSYNC(x)	{ if	( ((x) - step)%(2*step) ) 	x -=step; }
-#define NSYNC45(x)	{ if	( !(((x) - step)%(2*step)) )	x -=step; }
+#define PSYNC(x)	do { if	( (((x) + step)%(2*step)) ) 	x +=step; } while (0)
+#define PSYNC45(x)	do { if	( !(((x) + step)%(2*step)) )	x +=step; } while (0)
+#define NSYNC(x)	do { if	( (((x) - step)%(2*step)) ) 	x -=step; } while (0)
+#define NSYNC45(x)	do { if	( !(((x) - step)%(2*step)) )	x -=step; } while (0)
 
 #define KSET( x , knew )						\
-	{	byte	k1;						\
+	do {	byte	k1;						\
 		assert(x>=0&&x<xmax);	assert(knew<=kmax);		\
 		if(k1=yptr[0][x].isused) 				\
 			{ 	assert(k1<=kmax+1);			\
 				yptr[0][x].isused=min(knew+1,k1);	\
 			}						\
 		else	yptr[0][x].isused=knew+1;			\
-	}
+	} while (0)
 
-static          line_dots (coord yr, coord xl, coord xr, coord dx, byte kmin, int is45);
+static line_dots (coord yr, coord xl, coord xr, coord dx, byte kmin, int is45);
+
+/*  compute the parity of coordinate y  */
+static inline int parity (coord y)
+{
+  byte ky = 0;
+  
+  while ((ky < kmax) && (y % POW2 (ky) == 0))
+    ky++;
+  return ky-1;
+}
 
 /*
  *    Emit dots in x-direction from the points from ael
@@ -77,8 +87,8 @@ dotter_1d (edgelist el)		/*      el==ael */
 
 /*
  *    Emit dots in x and y directions from points and hor. edges on yline
- *      by calling line_dots for different ys. Those ys are choosen by the
- *      algorithm similar to used in line_dots.
+ *      by calling line_dots for different ys. Those ys are chosen by the
+ *      algorithm similar to one used in line_dots.
  */
 dotter_2d (edgelist el)		/*      el==yline.el    */
 {
@@ -102,7 +112,7 @@ dotter_2d (edgelist el)		/*      el==yline.el    */
 	    xr = xl = el.edges[e].x;
 	    break;
 	case 4:
-	    error ("no left point for hor.edge");
+	    error ("no left point for horizontal edge");
 	case 0:
 	    xl = el.edges[e].x;
 	    /*  need not work at points on hor. edge */
@@ -110,13 +120,13 @@ dotter_2d (edgelist el)		/*      el==yline.el    */
 	    ecnf = el.edges[e].ecnf;
 	    tcnf = el.edges[e].tcnf;
 	    while ((ecnf || tcnf) && (++e < el.len))
-/*! */ if (el.edges[e].dir == 0)
+	      if (el.edges[e].dir == 0)
 		{
 		    ecnf ^= el.edges[e].ecnf;
 		    tcnf ^= el.edges[e].tcnf;
 		}
 	    if (e == el.len)
-		error ("no right point for hor. edge ");
+		error ("no right point for horizontal edge ");
 	    xr = el.edges[e].x;
 	    break;
 	default:
@@ -203,7 +213,6 @@ line_dots (coord yr, coord xl, coord xr, coord dx, byte kmin, int is45)
     unsigned        step = POW2 (kmin);
     coord           xl1, xr1, x;
     byte            ky, k;
-    coord           curry;
 
     assert ((xl + dx) < xmax && (xr + dx) < xmax);
     assert (kmin <= kmax);
@@ -211,14 +220,9 @@ line_dots (coord yr, coord xl, coord xr, coord dx, byte kmin, int is45)
     /*  fill between xl and xr, assume they have such parity        */
     assert (!((xl + dx) % step || (xr + dx) % step));
     for (x = xl + dx; x <= xr + dx; x += step)
-	KSET (x, kmin)
+	KSET (x, kmin);
 
-	/*  compute the parity of current y  */
-	    ky = 0;
-    curry = y + yr;
-    while ((ky < kmax) && (curry % POW2 (ky) == 0))
-	ky++;
-    ky--;
+    ky = parity(y+yr);
 
     /*  left wave  */
     for (k = kmin; (k <= ky) && (xl + dx >= 0); k++)
@@ -229,11 +233,11 @@ line_dots (coord yr, coord xl, coord xr, coord dx, byte kmin, int is45)
 	xl -= step;
 #endif
 	if (is45)
-	    NSYNC45 (xl)
-		else
-	    NSYNC (xl)
-		for (x = xl1 + dx; x >= max (xl + dx, 0); x -= step)
-		KSET (x, k);
+	    NSYNC45 (xl);
+	else
+	    NSYNC (xl);
+	for (x = xl1 + dx; x >= max (xl + dx, 0); x -= step)
+	  KSET (x, k);
 	if (is45)
 	    xl -= 2 * step;
 	else
@@ -249,11 +253,11 @@ line_dots (coord yr, coord xl, coord xr, coord dx, byte kmin, int is45)
 	xr += step;
 #endif
 	if (is45)
-	    PSYNC45 (xr)
-		else
-	    PSYNC (xr)
-		for (x = xr1 + dx; x <= min (xr + dx, xmax - 1); x += step)
-		KSET (x, k);
+	    PSYNC45 (xr);
+	else
+	  PSYNC (xr);
+	for (x = xr1 + dx; x <= min (xr + dx, xmax - 1); x += step)
+	  KSET (x, k);
 	if (is45)
 	    xr += 2 * step;
 	else

@@ -139,13 +139,23 @@ initparams_lm ()
 	    error ("LTYPE should be S,I,N");
 	}
     }
-    GETPAR (buf, "FILMPAR", 1);
+    GETPAR (buf, "THICKNESS", 1);
     strtok (buf, SEPARATES);	/* skip layer 0 */
     for (i = 1; i <= nlay; i++)
     {
 	if ((b = strtok (NULL, SEPARATES)) == NULL)
-	    error ("can't read LRPAR");
-	layinfo[i].repar = atof (b);
+	    error ("can't read THICKNESS");
+	layinfo[i].thickness = atof (b);
+    }
+    GETPAR (buf, "LAMBDA", 1);
+    strtok (buf, SEPARATES);	/* skip layer 0 */
+    for (i = 1; i <= nlay; i++)
+    {
+	if ((b = strtok (NULL, SEPARATES)) == NULL)
+	    error ("can't read LAMBDA");
+	layinfo[i].lambda = atof (b);
+	if (layinfo[i].type != MET && layinfo[i].lambda != 0.0)
+	  warning("non-zero LAMBDA for non-metal layer?");
     }
     GETPAR (buf, "FILMMASK", 1);
     strtok (buf, SEPARATES);	/* skip layer 0 */
@@ -478,11 +488,12 @@ _dump_layerpar (FILE * f)
     int             l;
 
     fprintf (f, "LAYINFO ACCEPTED:\n");
-    fprintf (f, "MASK:    TYPE:    REPAR:\n");
+    fprintf (f, "MASK:    TYPE:    THICK:   LAMBDA:\n");
     for (l = 0; l <= nlay; l++)
     {
-	fprintf (f, "%8d %8d %8f\n",
-	      (int) layinfo[l].mask, (int) layinfo[l].type, layinfo[l].repar);
+	fprintf (f, "%8d %8d %8f %f8\n",
+	      (int) layinfo[l].mask, (int) layinfo[l].type, 
+		 layinfo[l].thickness, layinfo[l].lambda);
     }
 }
 

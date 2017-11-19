@@ -51,6 +51,12 @@ main_lm ()
     for (i = 0; i < nout; i++)
 	SpVectorStartInsertion (D->Cols + i);
 
+#ifdef SHOWFLOW
+    XYZ = SpMatrixCreate (3);
+    for (i = 0; i < 3; i++)
+	SpVectorStartInsertion (XYZ->Cols + i);
+#endif
+
     back = front = wavesource;
     to_front = front - eqsource;
     to_back = back - eqsource;
@@ -121,6 +127,10 @@ main_lm ()
 	SpVectorEndInsertion (C->Cols + i);
     for (i = 0; i < nout; i++)
 	SpVectorEndInsertion (D->Cols + i);
+#ifdef SHOWFLOW
+    for (i = 0; i < 3; i++)
+	SpVectorEndInsertion (XYZ->Cols + i);
+#endif
     solve ();
 
     return 0;

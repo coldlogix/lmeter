@@ -39,7 +39,7 @@
  *      Threshold and L_NNZ_Avail, the direct assignment to those variables
  *      overrides those defaults.
  */
-#define	LNNZMEM			100
+#define	LNNZMEM			256
 /*      This number of M's of memory can be used for L storing.         */
 #define	THRESHOLD_DEFAULT       1e-8
 /*      The default initial value of Threshold, rather small.           */

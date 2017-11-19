@@ -200,7 +200,9 @@ insert_edge ()
     {
 	if (dx && dy && abs (dx) != abs (dy))
 	{
-	    sprintf (strbuff, "At point %-6d %-6d non-45 edge", a.x, a.y);
+	    sprintf (strbuff, 
+		     "Non-45 edge between points %-8.4f:%-8.4f and %-8.4f:%-8.4f", 
+		     a.x*gridsize, a.y*gridsize, b.x*gridsize, b.y*gridsize );
 	    error (strbuff);
 	}
 	dir = dirtab[dirind (dx)][dirind (dy)];

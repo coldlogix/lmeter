@@ -115,21 +115,31 @@ get_edge ()
 
 getpoint (xypoint * pnt)
 {
-    float           x, y;
+    float           x, y, x1, y1;
 
     if (ungetc (ch, infile) == EOF)
 	error ("Can't unget !?");
     if (fscanf (infile, " %f %f ", &x, &y) != 2)
 	error ("Can't read point");
-    if (fmod (x, gridsize) != 0.0 || fmod (y, gridsize) != 0.0)
-	warning ("Coordinate is not multiple of step, rounding");
-    x = x / gridsize;
-    y = y / gridsize;
-    /* 
-     * We make conversion to int coord here                         
+    /*
+     * P.B. 08/19/2002
+     *
+     * Horrible kludge: 0.1 grid is not exactly representable 
+     * in binary, can trigger false warnings. Round first,
+     * then test if we got what we were looking for... 
      */
-    pnt->x = floor(x+0.5);
-    pnt->y = floor(y+0.5);
+    x1 = x / gridsize;
+    y1 = y / gridsize;
+    /* We make conversion to int coord here */
+    pnt->x = floor(x1+0.5);
+    pnt->y = floor(y1+0.5);
+
+    if ( fabs(pnt->x - x1) > 1e-4
+	 || fabs(pnt->y - y1) > 1e-4)
+      {
+	fprintf (stderr, "%g %g \n", fabs(pnt->x - x1),fabs(pnt->y - y1));
+	warning ("Coordinate is not multiple of step, rounded");
+      }
     ch = fgetc (infile);
     skipblank ();
 

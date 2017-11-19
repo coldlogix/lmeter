@@ -133,9 +133,19 @@ accept_edges ()
 	}
 
     }
-    /* test empty cnf in end of line        */
-    assert (cnfs[0] == space_cnf && cnfs[1] == space_cnf &&
-	    cnfs[6] == space_cnf && cnfs[7] == space_cnf);
+
+    /* test empty cnf in end of line        
+     * 
+     * This was a useful assertion, but it does not hold when last edge 
+     * on the line is at 45 degrees, then 6 or 1 can be filled.
+     * If 0 or 7 is filled, then something should be REALLY wrong. 
+     * P.B. 12/13/2002
+     */
+    assert (cnfs[0] == space_cnf && 
+	    /* cnfs[1] == space_cnf &&
+	       cnfs[6] == space_cnf && 
+	    */
+	    cnfs[7] == space_cnf);
 
 }				/* accept_edges */
 
@@ -196,21 +206,25 @@ accept_two_el ()
 	    hor_cnf ();
 	    if (xr < x + 2)
 		continue;
-/*                      if( cnfs[0]==cnfs[7] && nte==0 && xr-x>3 )
-   key=wavesource[1][(x+xr)/2].incnf;
-   else
- */ key = new_cnf ();
+	    /*                      if( cnfs[0]==cnfs[7] && nte==0 && xr-x>3 )
+				    key=wavesource[1][(x+xr)/2].incnf;
+				    else
+	    */ 
+	    key = new_cnf ();
 	    for (x = x + 1; x < xr; x++)
 		SETKEY (x, key);
 	}
     }
-    /* test empty cnf in end of line        */
-    assert (cnfs[0] == space_cnf);
-    assert (cnfs[1] == space_cnf);
-    assert (cnfs[6] == space_cnf);
-    assert (cnfs[7] == space_cnf);
-    assert (!hortercnf);
 
+    /* test empty cnf in end of line
+     * See above in accept_edges
+     */
+    assert (cnfs[0] == space_cnf && 
+	    /* cnfs[1] == space_cnf &&
+	       cnfs[6] == space_cnf && 
+	    */
+	    cnfs[7] == space_cnf);
+    assert (!hortercnf);
 }				/* accept_two_el */
 
 #define 	GET_DIR(e)	(ael.edges[e].dir)
@@ -335,7 +349,7 @@ acc_ter (cnftype cnf, int dir)
 	    up = terminfo[ite].up;
 	    dn = terminfo[ite].down;
 
-	    assert(dn < up && up < nlay);
+	    assert(dn < up && up <= nlay);
 
 	    trmlst[nte].slot = dir;
 	    trmlst[nte].up = up;

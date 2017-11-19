@@ -80,7 +80,8 @@ typedef struct
 {
     short           mask;
     isomet          type;
-    float           repar;
+    float           thickness;
+    float           lambda;
     float           shift;	/* shift in um.         */
 }
 layerpar;
@@ -119,6 +120,7 @@ layelinfo;
 typedef struct
 {
     double          coeff;	/* 1/gap_thickness              */
+    double          fracY;	/* insulator only/gap_thickness */
     byte            uplay, downlay;	/* up,down layers in gap        */
 }
 gapinfo;
@@ -183,6 +185,9 @@ EXTERN byte     kmax, kmin;
 EXTERN coord    y;		/* y coord corresponded to wavesource   */
 
 EXTERN SpMatrixP A, B, C, D;
+#ifdef SHOWFLOW
+EXTERN SpMatrixP XYZ;
+#endif
 
 EXTERN char    *laynames[NLAYMAX + 1]; /* CAD layers table */
 

@@ -83,7 +83,7 @@ compels (roundcnf * rcf)
     }
     rcf->nmetl = nmetl;
 
-    /* Does there any electrodes exist ?
+    /* Are there any electrodes?
      */
     if (neld == 0)
     {
@@ -91,7 +91,7 @@ compels (roundcnf * rcf)
 	return;
     }
 
-    /* use connections through holes is isolator                    */
+    /* use connections through holes in isolator                    */
     /* isolator layer has hole if it does not exist at some sector  */
     wasmet = 0;			/* first,no metal eld. can be reached   */
     for (l = 1; l <= nlay; l++)
@@ -188,20 +188,39 @@ compels (roundcnf * rcf)
     rcf->neld = neld;
 
 }				/* end of compels       */
+
 /*
  *    Find all Gaps around the point, store them in gaps[].
+ *    
+ *    Modified by Paul.Bunyk@trw.com on 10/05/01. 
+ *    It seems we need to add 3D admittance Y only to the true
+ *    magnetic portion of inductance, not kinetic terms (lambda)
+ *    For that we need to calculate insulator thickness di separately
+ *    from total thickness d and save f=di/d in the gap for future Y scaling. 
+ *
+ *    Another modification: we are calculating total SC thickness
+ *    here (sum of connected film thicknesses), then we compute and use
+ *    the lambda*coth(t/lambda) term.
  */
+
 void 
 storegaps (roundcnf * rcf)
 {
     layelinfo      *layels;	/* [nlay+1] with comp. eld. info */
     cnftype        *cnfs;	/* configs in all corners (0-7) */
-    byte            nmetl, imetl, m, s, l;
+    byte            nmetl, imetl, m, s, l, l1;
     cnftype         laybit;
     gapinfo       **gaps;
     byte            downlay;
-    byte            firstmet, justmet, waitgrd;
-    double          c, d;
+    byte            firstmet;   /* T if first metal in the gap  */
+    byte            justmet;    /* T if we have metal underneath*/
+    byte            waitgrd;    /* T if have not seen GROUND    */
+    double          d;  /* magnetic gap */
+    double          di; /* insulator gap */
+    double          f;  /* insulator/magnetic ratio */
+    double          t;  /* SC thickness */
+    double          c;  /* admittance 1/d */ 
+    double          lambda;
 
     gaps = rcf->gaps;
     nmetl = rcf->nmetl;
@@ -212,12 +231,11 @@ storegaps (roundcnf * rcf)
     assert (layels);
     assert (cnfs);
 
-    /* allocate gaps[][]    */
-    for (s = 0; s < 8; s++)
-	allocate (gaps[s], (nmetl + 1), sizeof (gapinfo));
     /* scan all sectors     */
     for (s = 0; s < 8; s++)
     {
+	allocate (gaps[s], (nmetl + 1), sizeof (gapinfo));
+
 	firstmet = 1;		/* was not metal        */
 	downlay = 0;
 	justmet = 0;
@@ -233,7 +251,8 @@ storegaps (roundcnf * rcf)
 		if (cnfs[s] & laybit)
 		{
 		    justmet = 0;
-		    d += layinfo[l].repar;
+		    d  += layinfo[l].thickness;
+		    di += layinfo[l].thickness;
 		}
 		break;
 	    case MET:
@@ -249,6 +268,7 @@ storegaps (roundcnf * rcf)
 			    while (m > 0)
 			    {
 				gaps[s][m].coeff = 0.0;
+				gaps[s][m].fracY = 1.0;
 				gaps[s][m].uplay = l;
 				assert (gaps[s][m].downlay == 0);
 				m--;
@@ -258,19 +278,62 @@ storegaps (roundcnf * rcf)
 			/* open gap     */
 			firstmet = 0;
 			justmet = 1;
-			d = layinfo[l].repar;
+			/* find solid SC thickness and lambda of the
+			 * top SC layer */
+			l1 = l;
+			t = 0.0;
+			/* while layer is not an existing insulator */
+			while (l1<=nlay &&
+			       !((cnfs[s] & POW2 (l1)) && layinfo[l1].type==ISO))
+			{
+			    if ( layinfo[l1].type==MET && (cnfs[s] & POW2 (l1)))
+			    {
+				t += layinfo[l1].thickness;
+				lambda = layinfo[l1].lambda;
+			    }
+			    l1++;
+			}
+
+		        /*
+			 * if (t != layinfo[l].thickness
+			 *   || lambda != layinfo[l].lambda)
+			 *   printf ("%f %f %f %f\n", t, lambda, 
+			 *    layinfo[l].thickness,layinfo[l].lambda);
+			 */
+
+			d = lambda/tanh(t/lambda);
+			di = 0.0;
 			downlay = l;
 		    }
 		    else
-		    {		/* close gap    */
+		    {	
 			imetl = layels[l].imetl;
 			assert (imetl);
 			if (justmet)	/*use last imetl */
 			    gaps[s][imetl] = gaps[s][imetl - 1];
-			else
+			else /* first metal after an insulator,
+			      * close gap */
 			{
-			    d += layinfo[l].repar;
-			    c = 1 / d;
+			    /* find solid SC thickness and lambda of the
+			     * top SC layer */
+			    l1 = l;
+			    t = 0.0;
+			    /* while layer is not an existing insulator */
+			    while (l1<=nlay &&
+				   !((cnfs[s] & POW2 (l1)) && layinfo[l1].type==ISO))
+			    {
+				if ( layinfo[l1].type==MET && (cnfs[s] & POW2 (l1)))
+				{
+				    t += layinfo[l1].thickness;
+				    lambda = layinfo[l1].lambda;
+				}
+				l1++;
+			    }
+
+			    /* Use current (bottom layer) lambda here */
+			    d += layinfo[l].lambda/tanh(t/layinfo[l].lambda);
+			    c = 1.0 / d;
+			    f = di  / d;
 			    gaps[s][imetl].downlay = downlay;
 			    m = imetl;
 			    /*      Fill 'imetl's in the gap */
@@ -278,10 +341,13 @@ storegaps (roundcnf * rcf)
 				   gaps[s][m].downlay == downlay)
 			    {
 				gaps[s][m].coeff = c;
+				gaps[s][m].fracY = f;
 				gaps[s][m].uplay = l;
 				m--;
 			    }
-			    d = layinfo[l].repar;
+			    /* open new gap, use top layer lambda here */
+			    d = lambda/tanh(t/lambda);
+			    di = 0.0;
 			    downlay = l;
 			    justmet = 1;
 			}
@@ -339,6 +405,7 @@ store_edgeinds (roundcnf * rcf)
 		byte            sa, sb, l1, imetl, imetl1, TrueEdge, m, downlay,
 		                downlay1;
 		float           coeff, coeff1, newcoeff, newcoeff1;
+		float           fracY, fracY1;
 		float           efflength, cuttedpart;
 		cnftype         cnfa, cnfb;
 		gapinfo        *gapptr, *gapptr1;
@@ -415,6 +482,7 @@ store_edgeinds (roundcnf * rcf)
 		assert (imetl <= nmetl);
 		gapptr = gaps[sa] + imetl;
 		coeff = gapptr->coeff;
+		fracY = gapptr->fracY;
 		assert (gapptr->uplay == l);
 		downlay = gapptr->downlay;
 
@@ -439,6 +507,7 @@ store_edgeinds (roundcnf * rcf)
 		    assert (imetl1 <= nmetl);
 		    gapptr1 = gaps[sa] + imetl1;
 		    coeff1 = gapptr1->coeff;
+		    fracY1 = gapptr->fracY;
 		    assert (gapptr1->uplay == l1);
 		    downlay1 = gapptr1->downlay;
 		}
@@ -451,6 +520,7 @@ store_edgeinds (roundcnf * rcf)
 		{
 		case 0:
 		    Coeff3D = Coeff3D0;
+		    fracY = 1.0;
 		    break;
 		case 1:
 		    Coeff3D = Coeff3D1;
@@ -463,12 +533,21 @@ store_edgeinds (roundcnf * rcf)
 		}		/*      switch  */
 		/*
 		 *    Subtract cut-off, add Coeff3D
+		 *
+		 *    Paul; Bunyk, 10/05/01:
+		 *    Now scales Y proportionally to fracY=insulator gap/total gap
+		 *    See also storegaps() above.
 		 */
 		efflength = unitsize / 2;	/* Thanks to D.Z. --- for 2     */
+		
+		/* To switch to old behaviour:	
+		 * fracY = fracY1 = 1.0; 
+		 */
+
 		cuttedpart = (layinfo[l].shift + bulklambda) / efflength;
-		newcoeff = coeff * (1 - cuttedpart) + Coeff3D / efflength;
+		newcoeff = coeff * (1 - cuttedpart) + fracY*Coeff3D / efflength;
 		if (closeUp)
-		    newcoeff1 = coeff1 * (1 - cuttedpart) + Coeff3D / efflength;
+		    newcoeff1 = coeff1 * (1 - cuttedpart) + fracY1*Coeff3D / efflength;
 		/*      
 		 *    And give 'newcoeff' and 'newcoeff1' to all users.
 		 */

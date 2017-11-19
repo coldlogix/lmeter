@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+#
+# File:         updatevalues
+# Description:  update values in a SPICE netlist from lm2sch results
+# Author:       Paul Bunyk
+# Created:      Apr  07 1999
+# Language:     perl
+# Package:      LMeter
+# Status:       Experimental
+#
+# (C) Copyright 1999, Paul Bunyk, all rights reserved.
+#
+
+($values = $ARGV[0]) && ($SPI = $ARGV[1])
+  || die "Usage: $0 lm2sch.out netlist.spi\n";
+
+open(valfile,"<$values") || die "$values: $!\n";
+
+while(<valfile>)
+  {
+    next if (/^\#/); # skip comments 
+    ($name, $value) = split;
+    $values{$name} = $value;
+  }
+
+rename($SPI, "$SPI.bak") || die "$SPI: $!\n";
+open(netlist,"<$SPI.bak") || die "$SPI.bak: $!\n";
+open(newnetlist,">$SPI") || die "$SPI: $!\n";
+select(newnetlist); # redirect output to newnetlist
+
+while (<netlist>)
+  {
+    if (/^[\.\*\+]/) # special SPICE card
+      {
+	print;  
+	next;
+      }
+    ($name, $n1, $n2, $value, @rest) = split;
+    $value = $values{$name} if ($values{$name}); # update value
+    print "$name $n1 $n2 $value @rest\n";
+  }
+	
+

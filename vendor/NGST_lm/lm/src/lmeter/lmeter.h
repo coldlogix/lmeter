@@ -20,6 +20,7 @@
 
 #include<stdlib.h>
 #include<stdio.h>
+#include<math.h>
 #include<assert.h>
 #include"sysdpnd.h"
 #include"misc.h"
