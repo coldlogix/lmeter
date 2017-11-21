@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
+project(lmeter)
+
 add_subdirectory(contrib)
 add_subdirectory(vendor/lm212/src/cif2dxc)
 #add_subdirectory(vendor/lm212/src/contrib)
