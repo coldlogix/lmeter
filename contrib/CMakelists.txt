@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 2.6)
+
+add_executable(ltm
+    ltm1.cpp
+)
+
+
+install(TARGETS ltm
+        RUNTIME DESTINATION bin)
