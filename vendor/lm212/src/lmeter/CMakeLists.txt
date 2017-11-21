@@ -49,6 +49,10 @@ target_link_libraries(lmeter
     m
 )
 
+install(TARGETS lmeter
+        RUNTIME DESTINATION bin
+)
+
 #test: lmeter
 #	(cd test; ../lmeter input.lm < test90.dxc)
 #

@@ -23,7 +23,7 @@ install(FILES
 #
 
 SET(CPACK_CMAKE_GENERATOR "Unix Makefiles")
-SET(CPACK_GENERATOR "TGZ")
+SET(CPACK_GENERATOR "TGZ;DEB")
 SET(CPACK_SOURCE_GENERATOR "TGZ")
 
 set(CPACK_PACKAGE_NAME "lmeter")
@@ -36,6 +36,21 @@ set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "lmeter")
 
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonathan Stark") 
+
+#
+# Debian
+#
+
+set (CPACK_DEBIAN_PACKAGE_MAINTAINER	"Jonathan Stark")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY  "lmeter 2d inductance extraction tool")
+set (CPACK_PACKAGE_DESCRIPTION 
+"lmeter is a 2d inductance extraction tool written by Paul Bunyk"
+)
+set (CPACK_DEBIAN_PACKAGE_DEPENDS	"")
+set (CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "")
+set (CPACK_DEBIAN_PACKAGE_SECTION	"Electronics")
+#set (CPACK_DEBIAN_PACKAGE_VERSION	)
+
 
 include(CPack)
 
