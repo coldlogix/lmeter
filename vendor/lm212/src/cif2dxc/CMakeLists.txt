@@ -25,16 +25,20 @@ target_include_directories(cif2dxc PRIVATE
 	${CMAKE_CURRENT_BINARY_DIR} # For lexx/yacc products
 )
 
+target_link_libraries(cif2dxc m)
+
 add_executable(cif2ps
     cif2ps.c
     ${SOURCES}
 )
+
 
 target_include_directories(cif2ps PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR} # For lexx/yacc products
 )
 
+target_link_libraries(cif2ps m)
 
 install(TARGETS cif2ps cif2dxc
         RUNTIME DESTINATION bin)

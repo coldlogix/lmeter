@@ -46,6 +46,7 @@ add_subdirectory(csspdms)
 
 target_link_libraries(lmeter
     csspdms
+    m
 )
 
 #test: lmeter
