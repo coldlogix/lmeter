@@ -53,7 +53,7 @@ tree            _search (keys x, tree * tptr, int *hp);
 /*      in ascending (by key) order                                     */
 /************************************************************************/
 
-int             apply_ascend (tree t, void f (tree t));
+void             apply_ascend (tree t, void f (tree t));
 
 /************************************************************************/
 /*      Procedure to count all members of tree t                        */

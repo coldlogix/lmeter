@@ -157,7 +157,7 @@ _search (keys x, tree * tptr, int *hp)
 
 }
 
-apply_ascend (tree p, void f (tree t))
+void apply_ascend (tree p, void f (tree t))
 {
     tree            pr;
 

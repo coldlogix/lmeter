@@ -377,7 +377,7 @@ outcnf (FILE * f, cnftype c)
 /*
  *    Read one y-line to internal structures.
  */
-readline ()
+void readline ()
 {
     coord           cy, x;
     int             ne, nx, ix, nex;

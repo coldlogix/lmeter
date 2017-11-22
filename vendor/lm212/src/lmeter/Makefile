@@ -5,7 +5,7 @@
 SHELL = /bin/csh
 
 CC = gcc
-MAKE = gmake
+MAKE = make
 CPP = $(CC) -M 
 
 #	The following -Defines may be added here:
@@ -24,7 +24,7 @@ CFLAGS = -DLONGCNF -Icsspdms -g -O3 \
 # +O3 -Aa
 #-O2 -mips2  
 
-LDFLAGS = -static
+LDFLAGS = 
 
 MALLOCDEBUG = 
 #-lefence

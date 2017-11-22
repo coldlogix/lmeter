@@ -54,7 +54,7 @@ static FILE    *pshead, *psgrid, *psgeom;
 /*
  *    PS file creation/closing
  */
-show_init ()
+void show_init ()
 {
     /* NB: this procedure should be called only after 
      * xmax, ymax are defined and xmin=0, ymin=0
@@ -142,7 +142,7 @@ show_init ()
 
 }				/* end of show_init */
 
-show_end ()
+void show_end ()
 {
     char            buffer[1024];
 
@@ -281,7 +281,7 @@ struct patlink
 #define	STROKE()	fprintf(psgrid," s\n")
 #define	LINEREL(x,y)	fprintf(psgrid," %g %g lr\n",(float)x,(float)y)
 
-show_pattern (coord x, struct patlink *pattern)
+void show_pattern (coord x, struct patlink *pattern)
 {
     int             s, l;
     int             gx = x, gy = usedline;
