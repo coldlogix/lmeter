@@ -1,0 +1,236 @@
+			     Jan 22, 2003
+
+	   LMETER PRIMER FOR USE WITH NGST J110E TECHNOLOGY
+			      Paul Bunyk
+			  Paul.Bunyk@trw.com
+
+			     Version 0.01
+
+This document tells you how to install current version of LMeter
+(together with its hooks to Cadence and NGST tech libraries) and run
+it on a simple JTL segment.
+
+WHAT LMETER DOES
+
+This package allows you to extract inductance values on cell layouts
+exported from Cadence. It consists of three parts: two command-line
+programs (lmeter and lm2sch) and Cadence interface to run them. The
+first program (lmeter) takes a representation of layout and calculates
+its complete inductance matrix. The second one (lm2sch) takes that
+complete matrix and tries to map it onto the schematic/netlist
+inductance values. If this mapping is not possible then you have
+topological differences between your layout and schematic, if it
+succeeds, you get inductance values for all the inductors on your
+schematic. (Note that lm2sch is my take on the same problem that Stas
+Polonsky's lm2cir tried to solve, if someone remembers that program,
+but it uses entirely different algorithm, much more numerically stable
+and about 100 times faster).
+
+WHAT DO YOU GET
+
+Unpack this tar.gz file somewhere. The examples below assume that you
+unpack it in your home directory. You should get subdirectory ~/NGST_lm.
+Inside that you'll find:
+
+lm/ -- the complete source and data distribution of the latest and
+greatest LMeter and friends.
+
+lm.il -- SKILL file which implements Cadence-> LMeter-> Cadence
+interface. 
+
+j110E_LM/ -- Cadence library with a single test cell (JTL segment) to
+try your installation.
+
+WHAT WILL YOU NEED
+
+o C compiler to compile LMeter sources. I do not know what
+architecture/OS are you using, so no binaries are included, but
+compiling the thing is very easy and straightforward, especially if
+you have gcc (and the rest of GNU toolchain) installed. Compiler
+options in Makefiles are gcc-specific (but I do not think I put any
+architecture-specific options there). Anyway, you can as well do it
+now:
+
+	cd NGST_lm/lm/src
+	make -C lmeter install
+	make -C lm2sch install
+
+o Our j110ELib and jjSymbolLib in your cds.lib file to play with
+the example JTL stage in j110E_LM.
+
+FILES TO MODIFY
+
+	~/.cdsinit	(to load Cadence interface)
+
+		(setq lmDir (getShellEnvVar "LMETER"))
+		(setq lmTechFile (strcat	lmDir
+						"/tech/TRW/j110E.dfl"))
+		(load (strcat lmDir "../lm.il"))
+
+	~/.cshrc	(assuming csh and friends, not bash)
+
+		setenv LMETER "~/NGST_lm/lm"
+		setenv PATH ${PATH}:${LMETER}/bin
+
+	~/.profile	(for bash, sh and friends)
+
+		export LMETER="~/NGST_lm/lm"
+		export PATH=${PATH}:${LMETER}/bin
+
+	cds.lib		(to access example library)
+		DEFINE j110E_LM ~/NGST_lm/j110E_LM
+
+THE JTL EXAMPLE
+
+Reload your ~/.cshrc or ~/.profile (e.g., opening another terminal),
+start Cadence, make sure you can see j110_LM library. 
+
+Open layout view of cell jtl. You'll see a JTL segment marked up with
+LMeter terminals (two of them, Pin and Pbias). More on terminals
+later. If you successfully modified your ~/.cdsinit, you should have
+LMeter option in top menu. Start with 'Initialize LMeter' to create an
+LMeter working directory (default name is your-cell-name.lm), it also
+creates two files there: lm.dfl (technology description file) and
+Makefile to run the rest of LMeter from that directory.
+
+Now 'Export to LMeter option' is highlighted, use that. Your LAYOUT is
+now exported to the same working directory in LMeter-readable format.
+
+Now try 'Run LMeter'. You should see some text in a window:
+
+	/home/pbunyk/lm/bin/lmeter lmeter.term < lmeter.dxc > lmeter.out 
+	* L-Meter 2.13 Copyright (C) 1992-2001 Paul I. Bunyk
+	* pbunyk@trw.com
+	* Based on the algorithms by Sergey V. Rylov
+	* RSFQ Laboratory, Department of Physics
+	*       SUNY, Stony Brook, NY, 11794-3800
+	* Laboratory of Cryoelectronics, Department of Physics
+	*       Moscow State University, Moscow, Russia, 119899
+	* Superconducting Electronics Organisation, TRW
+	*       One Space Park, Redondo Beach, CA, 90278
+	* This is free software, and you are welcome to redistribute it
+	* under the conditions of Gnu Public License (GPL)
+	* This software comes with ABSOLUTELY NO WARRANTY
+	LMeter: Execution begins. (lmeter.c:54)
+
+	[....]
+
+	LMeter: Execution ends. (lmeter.c:68)
+	make: *** No rule to make target `netlist.spi', needed by `all'.  Stop.
+
+Now, last line looks like we are having some problem. This is because
+we have not exported SCHEMATIC view yet. Open jtl/schematic, it also
+has LMeter menu, choose 'Export to LMeter', now 'Run Lmeter' again
+(from either layout or schematic view), you should get the actual
+inductance table now:
+
+	[...]
+	# Worst dE: 0.000749188 in experiment with terminal "Pbias"
+	# name            layout schem  diff     diff%
+	L0                3.060  2.890 -0.170    -5.9%
+	L1                2.416  2.070 -0.346   -16.7%
+	L2                6.704  7.000 +0.296    +4.2%
+	Lpb0              0.209  0.200 -0.009    -4.5%
+
+It lists three inductances (L0, L1 and L2) with their desired
+schematic and actual layout values as well as difference between
+schematic and layout values. It also tells you the parasitic
+inductance in series with b0, but not for b1. The latter is in series
+with L1 on this schematic and can not be extracted independently.
+
+If you are satisfied with the values you obtained and do not want to
+change your layout anymore (all of the above reasonable if you think
+that b1's parasitic inductance was added to L1, making it slightly
+larger), you can choose 'Update Inductance Values' on schematic view,
+the calculated inductances will propagate to your schematic and will
+be used in the next round of SPICE margin verification with actual
+parasitics extracted from layout.
+
+Now, imagine that you want a version of JTL which does have inductors
+sticking out on both sides. So, you draw a path in WIRA from b1 to
+wherever you want and you need to say that its other end corresponds
+to 'out' pin on schematic. For that you need to mark it with a
+terminal. In layout window choose option 'Draw Terminal' from LMeter
+menu (or press alt-t). It asks you for two corners of the terminal,
+place them at the outer edge of your path (similar to Pin). An option
+box will pop-up, asking you to fill out terminal properties. Name it
+'Pout' and say that it is connected between GND and WIRA (the default
+connection points '*' are good if you are placing a terminal between 
+TRIW and WIRA, which is the case for JJ).Press OK. 
+
+After you placed the terminal, you can change its properties as all
+other properties: select and press 'q'. 
+
+Also, all junctions and bias supplies should be marked up with
+terminals. It is convenient to name junctions with the same names they
+have on schematic, then LMeter menu option 'Draw JJ terminals' works
+like charm.
+
+Export modified layout to LMeter again, add an extra inductor between
+'b1' and 'out' on schematic and export that as well. Run LMeter. Though
+Cadence menu opption is fancy, you might consider opening a terminal,
+going to the lmeter working directory and typing 'make' there instead,
+works quite well.
+
+Now you should get the value of your new inductance as well as
+parasitic inductance added to b1. 
+
+HOW TO ESTIMATE THE QUALITY OF LM2SCH RESULTS?
+
+Besides inductance values, lm2sch also reports several numbers like
+this:
+
+# Worst currents accuracy: 0.000406 in experiment with terminal "Pbias"
+# Worst dE: 0.000757129 in experiment with terminal "Pbias"
+
+Here "current accuracy" relates to how well schematic topology
+describes the layout. For example, if you have an open on layout where
+schematic indicates a connection, it will leand to poor current
+accuracy.
+
+Another possible problem could be "upside-down terminal": on schematic
+you should pay attention to the "dot" on, e.g., junction
+symbol. LMeter assumes that the dotted side corresponds to the top end
+of the corresponding terminal on layout.
+
+If everything is fine, this value should have at least three 0's after
+decimal point.
+
+"Worst dE" is a measure of how well your schematic takes into account
+circuit parasitics (they should be present on netlist, though in many
+cases Cadence export script knows how to add them for you), it also
+estimates the relative accuracy of inductance mapping. Usually you
+should try to make dE to have at least one or two 0's after decimal
+point.
+
+For example if you have four inductors meeting in the same node on
+schematic, it helps to add a parasitic inductor and break that node
+like this:
+
+     |                        |                     |
+     |                        |                     |
+     |                        |                     |
+ ----o-----   ===>   ------o--o-----    OR    ------o--o-----
+     |                     |                           |
+     |                     |                           |
+     |                     |                           |
+
+(Use second configuration if LMeter reports the value of that
+parasitic to be negative). 
+
+Final notes: You should not have all-inductor loops on your schematic
+(each loop should contain at least one terminal). Usually this is not
+a problem because you can always convert these loops to star-like
+configuration.
+
+Also, if you have two inductors in series, lm2sch has absolutely no
+way to determine their individual values, only their sum. Previous
+version bitterly complained about that and refused to work at all,
+this bleeding edge one knows how to detect this case and completely
+ignore one of the series inductors, giving you a warning message. You
+should be careful with updating your netlist in this case, since
+LMeter will not produce any output for the dropped inductor (and the
+total inductance will all be attributed to the other one).
+
+Good luck!
+

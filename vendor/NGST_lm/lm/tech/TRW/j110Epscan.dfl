@@ -1,0 +1,111 @@
+#########################################
+#					#
+#	TRW J110E layerset definition	#
+#					#
+#	Version	0.1			#
+#	Created 09/99 			#
+#	by M. W. Johnson		#
+#					#
+#########################################
+#
+#	07/08/02 Modified for j110E (Paul Bunyk) (gridsize change to 0.1)
+#	02/13/00 Modified for j110D (Paul Bunyk)
+#	02/23/00 Added insulator overetching (Paul Bunyk)
+#	06/15/00 New values of insulator overetching for J110D 1.1 (Paul Bunyk)
+#	12/19/01 Modified to use thickness/lambda instead of layerpar (P.B.)
+#	01/09/02 Modified Coeff3D to work with new gapI/gapLambda fraction
+#	03/28/02 Removed bulklambda --- we do not need it now (P.B.)
+#
+
+# CAD layers definition: number and names
+nlayers		12
+laynames		TERM GNDE GNDC RESH RESI SIOG TRIW SIOA WIRA SIOB WIRB GOLD
+laycolors		15       5         3         13       5       11      2        1        4         10      7	6
+#       Available colors:
+#       1       Red
+#       2       Green
+#       3       Blue
+#       4       Cyan
+#       5       Magenta
+#       6       Yellow
+#       7       Violet
+#       8       Brown
+#       9       Dark Red
+#       10      Dark Green
+#       11      Dark Blue
+#       12      Dark Cyan
+#       13      Dark Magenta
+#       14      Dark Yellow
+#       15      Dark Violet
+#       16      Black
+
+# Encoding from CAD layers to physical films and their parameters
+# numbers:	0	1	2	3	4	5	6	7	8	9	10	11	12	13
+# names:	DUMMY	GND	NB2O5	RESH	RESI	SIOG0	SIOG1	TRIW	SIOA0	SIOA1	WIRA	SIOB	WIRB	GOLD
+nfilms		13
+filmtype	N	S	I	I	I	I	I	S	I	I	S	I	S	I
+thickness	0	0.2	0.145	0.140	0.105	0.137	0.022	0.2	0.194	0.025	0.3	0.490	0.6	0.48
+lambda		0	0.054	0	0	0	0	0	0.054	0	0	0.054	0	0.054	0
+filmmask	0	0	0	0	0	0	7	0	0	10	0	0	0	0
+filmshift	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+
+# obsolete, replaced by lambda/thickness
+#filmpar		0	0.054	0.145	0.140	0.105	0.137	0.022	0.054	0.194	0.025	0.054	0.490	0.054	0.48
+
+# N.B. Insulator films are "overetched" when covering metal is etched, 
+# thus they are split into two films each, e.g., SIOG0 and SIOG1.
+# Sum of their thicknesses is TDR value of SIOG thickness, 
+# SIOG1 is the overetching amount and it exists only if covered by TRIW
+# (as specified in filmmask). Same with SIOA0/SIOA1.
+# Also, NB2O5 thickness is changed WRT TDR. 
+
+layconf[TERM]	1	1	1	0	0	1	1	0	1	1	0	1	0	0
+layconf[GNDE]	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+layconf[GNDC]	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+layconf[RESH]	0	0	0	1	0	0	0	0	0	0	0	0	0	0
+layconf[RESI]	0	0	0	0	1	0	0	0	0	0	0	0	0	0
+layconf[SIOG]	0	0	0	0	0	1	1	0	0	0	0	0	0	0
+layconf[TRIW]	0	0	0	0	0	0	0	1	0	0	0	0	0	0
+layconf[SIOA]	0	0	0	0	0	0	0	0	1	1	0	0	0	0
+layconf[WIRA]	0	0	0	0	0	0	0	0	0	0	1	0	0	0
+layconf[SIOB]	0	0	0	0	0	0	0	0	0	0	0	1	0	0
+layconf[WIRB]	0	0	0	0	0	0	0	0	0	0	0	0	1	0
+layconf[GOLD]	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+
+#	"default" terminal configuration:
+deftermup	WIRA
+deftermdown	TRIW
+
+#	kmax	   - max rang of grid decimation
+#	kmin	   - not used but please define it
+#	currunit   - as in old LMeter
+#	unitsize   - um/CAD unit
+#	gridsize   - CAD units/finite element
+#	bulklambda - subtracted from edge boundaries  
+
+kmax		5
+kmin		1
+currunit	0.125
+#currunit 	0.329
+unitsize	1.0
+gridsize	0.1
+
+
+# current boundary inductance estimates with gapI/gapLambda
+# do not seem to require this! Paul B. 03/28/2002
+#bulklambda   	0.055
+bulklambda	0.0
+
+#	Coeff3D0 seems to be equal to Pi,
+Coeff3D0	3.14
+# updated for new version with gapI/gapLambda fraction
+Coeff3D1	1.659
+# no study was done on this one
+Coeff3D2	1.3
+
+# old values from SUNY times:
+# Coeff3D1        1.42
+# Coeff3D2        1.1
+
+
+

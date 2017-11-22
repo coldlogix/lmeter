@@ -1,0 +1,24 @@
+#
+jjSymbolLib inductor symbol
+L3
+L2
+L1
+L0
+#
+jjSymbolLib resistor symbol
+R0
+#
+jjSymbolLib rsj symbol
+b1
+b0
+#ISCELL
+jjSymbolLib gnd symbol
+I1
+I0
+#ISCELL
+basic ipin symbol
+PIN2
+PIN0
+#ISCELL
+basic opin symbol
+PIN1

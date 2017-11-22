@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+#
+# File:         cif2sch
+# Description:  Run all lmeter programs 
+# Author:       Paul Bunyk
+# Created:      Apr  07 1999
+# Language:     perl
+# Package:      LMeter
+# Status:       Experimental
+#
+# (C) Copyright 1999, Paul Bunyk, all rights reserved.
+#
+
+($CIF = $ARGV[0]) && ($SPI = $ARGV[1])
+  || die "Usage: $0 layout.cif netlist.spi\n";
+
+# program paths
+$cif2dxc = "cif2dxc";
+$lmeter = "lmeter";
+$lm2sch = "lm2sch";
+$spiceflatten = "spiceflatten";
+
+# tmp file names, better not to change
+$dxc4lmeter = "lmeter.dxc";
+$terms4lmeter = "lmeter.term";
+$terms4lm2sch = "term.name";
+$lmout = "lmeter.out";
+$spiflat = "flat.$SPI";
+$lm2schout = "lm2sch.out";
+
+$status = 
+  system("$cif2dxc $CIF > $dxc4lmeter") / 256
+  ||
+  system("$lmeter $terms4lmeter <$dxc4lmeter > $lmout") / 256
+  ||
+  system("$spiceflatten <$SPI >$spiflat") / 256
+  ||	
+  system("$lm2sch -n $spiflat -t $terms4lm2sch -c $lmout -o $lm2schout") / 256;
+
+exit($status);

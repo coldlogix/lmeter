@@ -1,0 +1,15 @@
+#
+j110ELib j110E_RESI_v0 layout
+r0
+#
+pbpadcMACLib pbJTLind_v0 layout
+L2
+L0
+L1
+#
+j110ELib j110E_RSJ_v0 layout
+b1
+b0
+#ISCELL
+j110ELib triw2wira symbolic
+I3

@@ -1,0 +1,92 @@
+#########################################
+#					#
+#	TRW J230 layerset definition	#
+#					#
+#	Version	0.1			#
+#	Created 09/24/01 		#
+#	by Paul Bunyk			#
+#					#
+#########################################
+#
+
+# CAD layers definition: number and names
+nlayers		12
+laynames		TERM 	GNDE 	SIOG 	SIOR	RESH 	RESI 	TRIW 	SIOA 	WIRA 	SIOB 	WIRB 	GOLD
+laycolors		15      5       3       14	13      5       11      2       1       4       10      7
+#       Available colors:
+#       1       Red
+#       2       Green
+#       3       Blue
+#       4       Cyan
+#       5       Magenta
+#       6       Yellow
+#       7       Violet
+#       8       Brown
+#       9       Dark Red
+#       10      Dark Green
+#       11      Dark Blue
+#       12      Dark Cyan
+#       13      Dark Magenta
+#       14      Dark Yellow
+#       15      Dark Violet
+#       16      Black
+
+# Encoding from CAD layers to physical films and their parameters
+# numbers:	0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15
+# names:	DUMMY	GND	SIOG0	SIOG1	TRIW	SIOA0	SIOA1	RESI	SIOR0	SIOR1	WIRA	RESH	SIOB0	SIOB1	WIRB	GOLD
+nfilms		15
+filmtype	N	S	I	I	S	I	I	I	I	I	S	I	I	I	S	N
+thickness	0	0.50	0.135	0.015	0.20	0.15	0.01	0.08	0.08	0.02	0.50	0.15	0.57	0.05	0.95	0
+lambda		0	0.40	0	0	0.48	0	0	0	0	0	0.35	0	0	0	0.40	0
+filmmask	0	0	0	4	0	0	7	0	0	10	0	0	0	14	0	0
+filmshift	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+
+# for lm212 -- thickness and effective lambda together
+filmpar		0	0.472	0.135	0.015	1.218	0.15	0.01	0.08	0.08	0.02	0.393	0.15	0.57	0.05	0.407	0
+
+# N.B. Insulator films are "overetched" when covering metal is etched, thus they are split into two films each, 
+# e.g., SIOG0 and SIOG1. Sum of their thicknesses is TDR value of SIOG thickness, SIOG1 is the overetching amount 
+# and it exists only if covered by TRIW (as specified in filmmask). Same with other insulator layers.
+#
+# SIOA mask etches both SIOA and SIOR films. The way it is implemented here assumes that SIOA and SIOR vias can not
+# overlap. This can be fixed, but it looks like this configuration is forbidden by TDR.  
+
+layconf[TERM]	1	1	1	1	0	1	1	0	1	1	0	0	1	1	0	0
+layconf[GNDE]	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+layconf[SIOG]	0	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0
+layconf[TRIW]	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+layconf[RESI]	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0
+layconf[SIOR]	0	0	0	0	0	0	0	0	1	1	0	0	0	0	0	0
+layconf[SIOA]	0	0	0	0	0	1	1	0	1	1	0	0	0	0	0	0
+layconf[WIRA]	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
+layconf[RESH]	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0
+layconf[SIOB]	0	0	0	0	0	0	0	0	0	0	0	0	1	1	0	0
+layconf[WIRB]	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
+layconf[GOLD]	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+
+#	"default" terminal configuration:
+deftermup	WIRA
+deftermdown	TRIW
+
+#	kmax	   - max rang of grid decimation
+#	kmin	   - not used but please define it
+#	currunit   - as in old LMeter, use 0.329 to get results in pH
+#	unitsize   - um/CAD unit
+#	gridsize   - CAD units/finite element
+#	bulklambda - subtracted from edge boundaries  
+
+kmax		6
+kmin		1
+currunit	0.329 
+#currunit	0.125
+unitsize	1.0
+gridsize	0.125
+
+bulklambda   	0.0
+
+#	Coeff3D0 seems to be equal to Pi
+Coeff3D0	3.14
+# 1.7 would be better for the table produced by fixed Chang's formula
+Coeff3D1	1.76
+# no systematic study was done on the second one. 
+Coeff3D2	1.76
