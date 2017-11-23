@@ -1,0 +1,37 @@
+language: c
+compiler:
+  - clang
+  - gcc
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="brew install gcc5 && CC=gcc-5 && CXX=g++-5"
+
+before_install:
+    - eval "${MATRIX_EVAL}"
+
+notifications: # set notification options
+  email:
+    recipients:
+      - stark@coldlogix.com
+
+branches:
+  only:
+    - master
+    - lm212_coldlogix
+    - ngst_coldlogix
+
+# Build steps
+script:
+  - mkdir build
+  - cd build
+  - cmake .. && make
+

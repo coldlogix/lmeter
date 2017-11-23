@@ -58,7 +58,7 @@ applied.  Used  approach is based on the solution of 2D laplace equation on Jose
 with coefficients adjusted to take into account 3D effects and changes in feature sizes during fabrication.")
 
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY 
-"lmeter is a 2d superdconductor inductance extraction tool written by Paul Bunyk"
+"lmeter is a 2d superconductor inductance extraction tool written by Paul Bunyk"
 )
 set (CPACK_DEBIAN_PACKAGE_DEPENDS	"")
 set (CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "")
