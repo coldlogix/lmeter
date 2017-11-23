@@ -5,6 +5,9 @@ compiler:
 
 matrix:
   include:
+    - os: linux
+      dist: trusty
+      sudo: false
     - os: osx
       osx_image: xcode8
       env:
@@ -31,5 +34,6 @@ branches:
 script:
   - mkdir build
   - cd build
-  - cmake .. && make
+  - cmake .. && make && make package
+
 
