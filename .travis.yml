@@ -17,12 +17,22 @@ matrix:
       osx_image: xcode8
 
 before_install:
+    - git config --local user.name "Travis CI"
+    - git config --local user.email "travis@coldlogix.com"
+    - git tag "$(date +'%Y%m%d-%H:%M:%S')-$(git log --format=%h -1)"
     - eval "${MATRIX_EVAL}"
 
 notifications: # set notification options
   email:
     recipients:
-      - stark@coldlogix.com
+      - travis@coldlogix.com
+
+deploy:
+      provider: pages
+      skip_cleanup: true
+      github_token: $GITHUB_TOKEN
+      file_glob: true
+      file: lmeter*.tar.gz
 
 branches:
   only:
