@@ -3,11 +3,11 @@ LMeter
 
 
 
-lmeter computes a current flowing through terminals of a multilayer superconductive integrated 
-circuit in several experiments when unit Josephson phase difference across one of the terminals - 
-current sources and zero phase differencies  across  other  terminals  are applied.  Used  
-approach is based on the solution of 2D laplace equation on Josephson phase differencies 
-between superconductive layers with coefficients adjusted to take into account 3D effects 
+lmeter computes a current flowing through terminals of a multilayer superconductive integrated
+circuit in several experiments when unit Josephson phase difference across one of the terminals -
+current sources and zero phase differencies across other terminals  are applied.  Used
+aproach is based on the solution of 2D laplace equation on Josephson phase differencies
+between superconductive layers with coefficients adjusted to take into account 3D effects
 and changes in feature sizes during fabrication.
 
 Branches
