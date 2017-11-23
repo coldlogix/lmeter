@@ -33,6 +33,11 @@ deploy:
       github_token: $GITHUB_TOKEN
       file_glob: true
       file: lmeter*.tar.gz
+      on:
+          branch: 
+            - master
+            - lm212_coldlogix
+            - ngst_coldlogix
 
 branches:
   only:
