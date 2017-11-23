@@ -19,7 +19,7 @@ matrix:
 before_install:
     - git config --local user.name "Travis CI"
     - git config --local user.email "travis@coldlogix.com"
-    - git tag "$(date +'%Y%m%d-%H:%M:%S')-$(git log --format=%h -1)"
+#    - git tag "$(date +'%Y%m%d-%H:%M:%S')-$(git log --format=%h -1)"
     - eval "${MATRIX_EVAL}"
 
 notifications: # set notification options
