@@ -7,12 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-//#include <fstream.h>
 #include <string.h>
 #include <assert.h>
 
 char ciffile[250],ciffile2[250];
-char s[50],f6[50]=".cif",f7[50]=".cif2";   // Endung cif-File
+char s[50],f6[50]=".cif",f7[50]=".cif2";   // cif-file suffix
+
 char lterms[50]="LTERM;",boxs[50]="B",newline[50]="\n";
 //-------
 char tname[64][50];
@@ -30,40 +30,40 @@ int TN;
 //FILE *ez;
 
 //------------------------------
-char tz[50]="94",te[50]="TEXT;",tend[50]="E";   // Text Eintrag
+char tz[50]="94",te[50]="TEXT;",tend[50]="E";   // Text entry
 //---------------------------------------------
 void textread()
   {
     int c,tn=0;
-    printf("CIF File nach Text durchsuchen -> %s  \n------\n",ciffile);
-    char zeile[20][50];
+    printf("CIF File search for Text -> %s  \n------\n",ciffile);
+    char row[20][50];
     FILE *ez; 
     ez=fopen(ciffile,"r+");
  
     do {
     fscanf(ez,"%s",s);
     while ((strcmp(s,tend)!=0)&&(strcmp(s,tz)!=0)) 
-                 fscanf(ez,"%s",s);   // Text Kennung gefunden      
+                 fscanf(ez,"%s",s);   // Text identifier found
     if (strcmp(s,tz)==0)
     {      
       c=0;
       do {
         fscanf(ez,"%s",s);  
-        strcpy(zeile[c++],s);
+        strcpy(row[c++],s);
      //   printf("%s ",s);
       } while (strcmp(s,te)!=0);
       if (c==6)
         { 
-	   strcpy(tname[tn],zeile[0]);
-	   strcpy(tdown[tn],zeile[1]);
-   	   strcpy(ttop[tn],zeile[2]);	   
-	   strcpy(tx[tn],zeile[3]);
-	   txx[tn]=atoi(zeile[3]);
-	   tyy[tn]=atoi(zeile[4]);	   
-     	   printf("Term %d: %s  (%s,%s)",tn+1,zeile[0],zeile[2],zeile[1]);          
-           printf("@(%s,%s)\n",zeile[3],zeile[4]);             	 	 
+	   strcpy(tname[tn],row[0]);
+	   strcpy(tdown[tn],row[1]);
+   	   strcpy(ttop[tn],row[2]);	   
+	   strcpy(tx[tn],row[3]);
+	   txx[tn]=atoi(row[3]);
+	   tyy[tn]=atoi(row[4]);	   
+     	   printf("Term %d: %s  (%s,%s)",tn+1,row[0],row[2],row[1]);          
+           printf("@(%s,%s)\n",row[3],row[4]);             	 	 
 
-	   strcpy(ty[tn++],zeile[4]);	   		   
+	   strcpy(ty[tn++],row[4]);	   		   
         }
      }
     TN=tn; 
@@ -130,11 +130,11 @@ void termein()
      } while ((found==0)&&(k<TN));
      if (found==0)
        {
-         assert("Text nicht innerhalb eines Terminals\n");
+         assert("Text not inside a Terminal\n");
        }
 //-----------------------------------------------------		
       fprintf(ey,"5 99 %s %s %s;\n",tname[k-1],tdown[k-1],ttop[k-1]);
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-	Linien-Terminal       
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-	Line-Terminal       
          if ((DX>0)&&(DY>0))
            fprintf(ey,"B %s %s %s %s ",tboxdx,tboxdy,tboxx,tboxy);  
 	    else
@@ -173,9 +173,9 @@ int main (int argc, char *argv[])
   {
     int e,mode;
        
-    printf("\nLMeter Terminal Generator 1.2 ------------------------\n");
+    printf("\nLMeter Terminal Generator 1.2 --------------------------\n");
     printf("Thomas Ortlepp ------------------------------------------\n");
-    printf("letzte Aenderung: 21.04.2004-----------------------------\n");  
+    printf("Last change: 21.04.2004----------------------------------\n");  
     printf("---------------------------------------------------------\n");      
     if (argc==2)
       {
@@ -186,7 +186,7 @@ int main (int argc, char *argv[])
       }	
     else    
       {
-        printf("Programmaufruf: \n");      
+        printf("Usage: \n");      
         printf("ltm <cif-file>\n"); 
 	exit(1);
       }	
