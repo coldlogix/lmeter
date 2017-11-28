@@ -159,7 +159,7 @@ getiterm ()
 
     ungetc (ch, infile);
     if (fscanf (infile, "%d", &ite) != 1)
-	error ("Bad teminal number");
+	error ("Bad terminal number");
     ch = fgetc (infile);
     skipblank ();
     currite = ite;
