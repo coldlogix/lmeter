@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang   -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/cif2dxc.dir/cif2dxc.c.o CMakeFiles/cif2dxc.dir/cifgeom.c.o CMakeFiles/cif2dxc.dir/list.c.o CMakeFiles/cif2dxc.dir/cif.tab.c.o CMakeFiles/cif2dxc.dir/cif.yy.c.o  -o cif2dxc  -lm 

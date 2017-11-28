@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/travis/build/coldlogix/lmeter/contrib/ltm1.cpp
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+string.h
+-
+assert.h
+-
+

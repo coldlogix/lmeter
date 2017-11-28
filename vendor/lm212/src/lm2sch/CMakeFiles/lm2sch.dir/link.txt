@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang   -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/lm2sch.dir/linalg.c.o CMakeFiles/lm2sch.dir/lm2sch.c.o  -o lm2sch  

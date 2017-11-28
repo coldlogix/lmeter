@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/travis/build/coldlogix/lmeter/vendor/lm212/src/lm2sch/linalg.c
+linalg.h
+/Users/travis/build/coldlogix/lmeter/vendor/lm212/src/lm2sch/linalg.h
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+
+/Users/travis/build/coldlogix/lmeter/vendor/lm212/src/lm2sch/linalg.h
+
+/Users/travis/build/coldlogix/lmeter/vendor/lm212/src/lm2sch/lm2sch.c
+errno.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+assert.h
+-
+math.h
+-
+ctype.h
+-
+linalg.h
+/Users/travis/build/coldlogix/lmeter/vendor/lm212/src/lm2sch/linalg.h
+unistd.h
+-
+
